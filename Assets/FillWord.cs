@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class FillWord : MonoBehaviour
 {
+    enum Directions {zero = 0, top, down, left, right };
     List<List<int>> ListPassedСells;
     int rankOfListPassedCell = 0; // номер пустой зоны
     int[,] mass;  //массив для генерации филворда
@@ -30,10 +31,10 @@ public class FillWord : MonoBehaviour
         int x = Random.Range(0, mass.GetLength(0) - 1);
         int y = Random.Range(0, mass.GetLength(1) - 1);
         Debug.Log(x + " " + y);
-         mass[x, y] = 1;
-    
+        // mass[x, y] = 1;
 
 
+        FillingFirstWord(mass, 5);
 
         CheckEmptyCells(mass);
         ShowMassFillword(mass);
@@ -174,4 +175,71 @@ public class FillWord : MonoBehaviour
         return mass[i, j];
     }
 
+    //=============================================================
+    //    Filling in the first word
+    void FillingFirstWord(int[,] mass, int numberOfLetters)
+    {
+        int startCell = Random.Range(0, mass.GetLength(0) * mass.GetLength(1) - 1);
+
+        Debug.Log("Start cell = " + startCell);
+        SetValueByNumber(1, startCell, ref mass);
+
+        int x = 0;
+        for (int i = 0; i < numberOfLetters-1; i++)
+        {
+            x = GetNextCell(mass, startCell);
+            Debug.Log("Next cell = " + x);
+            SetValueByNumber(1, x, ref mass);
+        }
+    }
+    void SetValueByNumber(int value, int number,ref int [,]mass)
+    {
+        int i = number / mass.GetLength(0);
+        int j = number - i * mass.GetLength(0);
+        mass[i, j] = value;
+      
+    }
+    int GetNextCell(int[,] mass,int numberCurrentCell)
+    {
+        int i = numberCurrentCell / mass.GetLength(0);
+        int j = numberCurrentCell - i * mass.GetLength(0);
+
+        int[] dir = { 0, 0, 0, 0 };
+
+        int index = 0;
+
+        int up = (mass.GetLength(0) * (i - 1)) + j;
+        if (i - 1 > 0 && GetValueByNubber(up) == 0)
+        {
+           // Debug.Log("Up cell Free ");
+            dir[index] = up;
+            index++;
+        }
+
+        int down = (mass.GetLength(0) * (i + 1)) + j;
+        if (i + 1 < mass.GetLength(0) && GetValueByNubber(down) == 0)
+        {
+            //Debug.Log("down cell Free ");
+            dir[index] = down;
+            index++;
+        }
+
+        int left = (mass.GetLength(0) * i) + j - 1;
+        if (j - 1 > 0 && GetValueByNubber(left) == 0)
+        {
+            //Debug.Log("left cell Free ");
+            dir[index] = left;
+            index++;
+        }
+
+        int right = (mass.GetLength(0) * i) + j + 1;
+        if (j + 1 < mass.GetLength(1) && GetValueByNubber(right) == 0)
+        {
+            //Debug.Log("right cell Free ");
+            dir[index] = right;
+            index++;
+        }
+        Debug.Log("index = " + index);
+            return dir[Random.Range(0,index-1)];
+    }
 }
