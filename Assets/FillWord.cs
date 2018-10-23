@@ -7,6 +7,7 @@ public class FillWord : MonoBehaviour
     List<List<int>> ListPassedСells;
     int rankOfListPassedCell = 0; // номер пустой зоны
     int[,] mass;  //массив для генерации филворда
+
     // Use this for initialization
     void Start()
     {
@@ -26,33 +27,11 @@ public class FillWord : MonoBehaviour
     {
         FillMassZero();
 
-        //int x = Random.Range(0, mass.GetLength(0) - 1);
-        //int y = Random.Range(0, mass.GetLength(1) - 1);
-        //Debug.Log(x + " " + y);
-        // mass[x, y] = 1;
-        mass[1, 1] = 1;
-        mass[1, 2] = 1;
-        mass[1, 3] = 1;
-        mass[2, 1] = 1;
-        mass[3, 1] = 1;
-
-        mass[7, 1] = 1;
-        mass[7, 2] = 1;
-        mass[7, 3] = 1;
-        mass[6, 1] = 1;
-        mass[5, 1] = 1;
-
-        mass[1, 7] = 1;
-        mass[1, 6] = 1;
-        mass[1, 5] = 1;
-        mass[2, 7] = 1;
-        mass[3, 7] = 1;
-
-        mass[7, 7] = 1;
-        mass[7, 6] = 1;
-        mass[7, 5] = 1;
-        mass[6, 7] = 1;
-        mass[5, 7] = 1;
+        int x = Random.Range(0, mass.GetLength(0) - 1);
+        int y = Random.Range(0, mass.GetLength(1) - 1);
+        Debug.Log(x + " " + y);
+         mass[x, y] = 1;
+    
 
 
 
