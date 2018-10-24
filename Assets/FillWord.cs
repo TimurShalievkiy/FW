@@ -199,6 +199,8 @@ public class FillWord : MonoBehaviour
         mass[i, j] = value;
       
     }
+
+    //получение следующей ячейки слова
     int GetNextCell(int[,] mass,int numberCurrentCell)
     {
         int i = numberCurrentCell / mass.GetLength(0);
