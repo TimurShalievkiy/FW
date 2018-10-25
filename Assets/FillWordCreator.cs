@@ -6,10 +6,12 @@ using UnityEngine.UI;
 public class FillWordCreator : MonoBehaviour
 {
 
-    public GameObject CellGrid;
+    public GameObject CellGrid; //
     public Slider NumberFirstCell;
 
-    List<List<int>> ListPassedСells;
+    List<List<int>> ListPassedСells; // пройденые пустые ячейки с разделением на зоны
+    List<int> deadEndCell; //тупиковые ячейки с которых удобнее всего начинать слова
+    List<string> ListWordsForFillword;
 
     int[,] mass;
 
@@ -37,10 +39,12 @@ public class FillWordCreator : MonoBehaviour
     }
     public void ResetFillWord()
     {
+        Debug.Log("Reset");
         do
         {
             mass = new int[5, 5];
             ListPassedСells = new List<List<int>>();
+            deadEndCell = new List<int>();
             rankOfListPassedCell = 0;
             SetCellNumbers();
 
@@ -49,7 +53,7 @@ public class FillWordCreator : MonoBehaviour
 
         } while (!CheckEmptyCells(mass, lengthOfsmolestWord));
 
-        CheckTupicalCell(mass);
+       
     }
     void SetCellNumbers()
     {
@@ -178,21 +182,19 @@ public class FillWordCreator : MonoBehaviour
         string str = "";
         foreach (var x in ListPassedСells)
         {
-            if (x.Count < lengthOfsmolestWord)
+            if (!CheckMinCountCellInZone(lengthOfsmolestWord))
             {
                 return false;
             }
 
             foreach (var y in x)
             {
-
                 str += y.ToString() + " ";
-
             }
             str += "\n";
         }
         
-        Debug.Log("List count = " + ListPassedСells.Count + " \n" + str);
+      //  Debug.Log("List count = " + ListPassedСells.Count + " \n" + str);
         return true;
     }
 
@@ -269,6 +271,7 @@ public class FillWordCreator : MonoBehaviour
     {
         int i = number / mass.GetLength(0);
         int j = number - i * mass.GetLength(0);
+
         int count = 0;
         
         //проверка вурхней ячейки на пустоту и запись
@@ -312,14 +315,95 @@ public class FillWordCreator : MonoBehaviour
     }
     void CheckTupicalCell(int[,] mass)
     {
+        deadEndCell = new List<int>();
         foreach (var x in ListPassedСells)    
             foreach (var y in x)
             {
                 //Debug.Log("Count = " + CountFreeNearestCell(y));
                 if (CountFreeNearestCell(y) == 1)
                 {
-                    Debug.Log("Tupical = " + y);
+                    deadEndCell.Add(y);
                 }
             }       
+    }
+
+    bool CheckMinCountCellInZone(int min)
+    {
+       
+        foreach (var x in ListPassedСells)
+        {
+            if (x.Count < min)
+            {
+               // Debug.Log(x.Count + " > " + min +" = false");
+                return false;
+            }
+        }
+       // Debug.Log("true");
+            return true;
+    }
+
+    public void AddNewWord()
+    {
+        ;
+        //вставить функцию определения минимального слова в словаре
+        CheckMinCountCellInZone(lengthOfsmolestWord);
+
+
+        int startCell = 0;
+
+        if (deadEndCell.Count > 0)
+        {
+            startCell = deadEndCell[0];
+
+        }
+        else
+        {
+            while (true)
+            {
+                startCell = Random.Range(0, mass.GetLength(0) * mass.GetLength(1));
+                if (GetValueByNubber(startCell) == 0)
+                {
+                    break;
+                }
+            }
+        }
+
+        //Debug.Log("Start cell = " + startCell);
+        SetValueByNumber(1, startCell, ref mass);
+
+        int x = startCell;
+        int[,] buffMas = mass;
+        bool checker = true;
+        int counter = 0;
+        int counter2 = 0;
+        while (checker)
+        {
+            mass = buffMas;
+            counter = 0;
+            for (int i = 0; i < numberLetersInFirstWord - 1; i++)
+            {
+                x = GetNextCell(mass, x);
+                if (x == -1)
+                {
+                    Debug.Log(" x == -1");
+                    //CellGrid.transform.GetChild(x).GetComponent<Image>().color = Color.red;
+                    break; 
+                }
+                counter++;
+                //Debug.Log("Next cell = " + x);
+                SetValueByNumber(2, x, ref mass);
+                CellGrid.transform.GetChild(x).transform.GetChild(0).GetComponent<Text>().text = 2.ToString();
+                CellGrid.transform.GetChild(x).GetComponent<Image>().color = Color.green;
+            }
+            if(counter == numberLetersInFirstWord)
+                checker = false;
+            counter2++;
+            if (counter2 == 1000)
+            {
+                checker = false;
+                Debug.Log("eror");
+            }
+        }
+
     }
 }
