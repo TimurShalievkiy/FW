@@ -20,18 +20,9 @@ public class FillWordCreator : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        do
-        {
-            mass = new int[5, 5];
-            ListPassedСells = new List<List<int>>();
-            rankOfListPassedCell = 0;
-            SetCellNumbers();
+        ResetFillWord();
 
-            FillingFirstWord(mass, numberLetersInFirstWord);
-          
 
-        } while (!CheckEmptyCells(mass, lengthOfsmolestWord));
-       
     }
 
     // Update is called once per frame
@@ -57,6 +48,8 @@ public class FillWordCreator : MonoBehaviour
 
 
         } while (!CheckEmptyCells(mass, lengthOfsmolestWord));
+
+        CheckTupicalCell(mass);
     }
     void SetCellNumbers()
     {
@@ -187,11 +180,9 @@ public class FillWordCreator : MonoBehaviour
         {
             if (x.Count < lengthOfsmolestWord)
             {
-                Debug.Log("beeeeeeeeeeed");
                 return false;
             }
-            else
-                Debug.Log("goooooooooood");
+
             foreach (var y in x)
             {
 
@@ -274,4 +265,61 @@ public class FillWordCreator : MonoBehaviour
         }
     }
 
+    int CountFreeNearestCell(int number)
+    {
+        int i = number / mass.GetLength(0);
+        int j = number - i * mass.GetLength(0);
+        int count = 0;
+        
+        //проверка вурхней ячейки на пустоту и запись
+        if (i - 1 >= 0)
+        {         
+            int up = (mass.GetLength(0) * (i - 1)) + j;
+            if (GetValueByNubber(up) == 0 )
+            {
+                count++;
+            }
+        }
+        //проверка нижней ячейки на пустоту и запись
+        if (i + 1 < mass.GetLength(0))
+        {
+            int down = (mass.GetLength(0) * (i + 1)) + j;
+            if (GetValueByNubber(down) == 0 )
+            {
+                count++;
+            }
+        }
+        //проверка левой ячейки на пустоту и запись
+        if (j - 1 >= 0)
+        {
+            int left = (mass.GetLength(0) * i) + j - 1;
+            if (GetValueByNubber(left) == 0 )
+            {
+                count++;
+            }
+        }
+        //проверка правой ячейки на пустоту и запись
+        if (j + 1 < mass.GetLength(1))
+        {
+            int right = (mass.GetLength(0) * i) + j + 1;
+            if (GetValueByNubber(right) == 0 )
+            {
+                count++;
+            }
+        }
+       // Debug.Log("number = " + number + " count = " + count );
+        return count;
+    }
+    void CheckTupicalCell(int[,] mass)
+    {
+        foreach (var x in ListPassedСells)    
+            foreach (var y in x)
+            {
+                //Debug.Log("Count = " + CountFreeNearestCell(y));
+                if (CountFreeNearestCell(y) == 1)
+                {
+                    Debug.Log("Tupical = " + y);
+                }
+            }       
+    }
 }
