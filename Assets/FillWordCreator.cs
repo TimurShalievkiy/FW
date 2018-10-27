@@ -39,9 +39,10 @@ public class FillWordCreator : MonoBehaviour
     }
     public void ResetFillWord()
     {
-        Debug.Log("Reset");
+       // Debug.Log("Reset");
         do
         {
+           // Debug.Log("Reset in while");
             mass = new int[5, 5];
             ListPassedСells = new List<List<int>>();
             deadEndCell = new List<int>();
@@ -51,7 +52,7 @@ public class FillWordCreator : MonoBehaviour
             FillingFirstWord(mass, numberLetersInFirstWord);
 
 
-        } while (!CheckEmptyCells(mass, lengthOfsmolestWord));
+        } while (!CheckEmptyCells(mass, lengthOfsmolestWord) );
 
        
     }
@@ -75,6 +76,8 @@ public class FillWordCreator : MonoBehaviour
         //Debug.Log("Start cell = " + startCell);
         SetValueByNumber(1, startCell, ref mass);
 
+        CellGrid.transform.GetChild(startCell).GetComponent<Image>().color = Color.blue;
+
         int x = startCell;
         for (int i = 0; i < numberOfLetters - 1; i++)
         {
@@ -85,8 +88,11 @@ public class FillWordCreator : MonoBehaviour
                 break;
             }
             //Debug.Log("Next cell = " + x);
+            //CellGrid.transform.GetChild(x).GetComponent<Image>().color = Color.blue;
             SetValueByNumber(1, x, ref mass);
+            
         }
+        SetColors(mass);
     }
 
     void SetValueByNumber(int value, int number, ref int[,] mass)
@@ -95,7 +101,7 @@ public class FillWordCreator : MonoBehaviour
         int j = number - i * mass.GetLength(0);
         mass[i, j] = value;
 
-        CellGrid.transform.GetChild(number).GetComponent<Image>().color = Color.blue;
+        //CellGrid.transform.GetChild(number).GetComponent<Image>().color = Color.blue;
         //CellGrid.transform.GetChild(number).transform.GetChild(0).GetComponent<Text>().
     }
 
@@ -152,11 +158,15 @@ public class FillWordCreator : MonoBehaviour
     int GetValueByNubber(int number)
     {
         int i = number / mass.GetLength(0);
-        int j = number - i * mass.GetLength(0);
+        int j = number - i * mass.GetLength(1);
         return mass[i, j];
     }
 
+    int GetNumberByPosInArray(int i, int j)
+    {
 
+        return i* mass.GetLength(0) +j;
+    }
 
     bool CheckEmptyCells(int[,] mass, int min)
     {
@@ -171,7 +181,6 @@ public class FillWordCreator : MonoBehaviour
                     {
                         ListPassedСells.Add(new List<int>());
                         ListPassedСells[rankOfListPassedCell].Add(mass.GetLength(0) * i + j);
-                        //Debug.Log("Added in CheckEmptyCells " + (mass.GetLength(0) * i + j));
                         CheckNearest(mass.GetLength(0) * i + j);
                         rankOfListPassedCell++;
                     }
@@ -179,14 +188,14 @@ public class FillWordCreator : MonoBehaviour
             }
         }
 
+        if (CheckMinCountCellInZone(lengthOfsmolestWord))
+        {
+            return false;
+        }
+
         string str = "";
         foreach (var x in ListPassedСells)
         {
-            if (!CheckMinCountCellInZone(lengthOfsmolestWord))
-            {
-                return false;
-            }
-
             foreach (var y in x)
             {
                 str += y.ToString() + " ";
@@ -194,7 +203,7 @@ public class FillWordCreator : MonoBehaviour
             str += "\n";
         }
         
-      //  Debug.Log("List count = " + ListPassedСells.Count + " \n" + str);
+       Debug.Log("List count = " + ListPassedСells.Count + " \n" + str);
         return true;
     }
 
@@ -315,10 +324,10 @@ public class FillWordCreator : MonoBehaviour
     }
     void CheckTupicalCell(int[,] mass)
     {
-        deadEndCell = new List<int>();
+        deadEndCell.Clear();
         foreach (var x in ListPassedСells)    
             foreach (var y in x)
-            {
+            {           
                 //Debug.Log("Count = " + CountFreeNearestCell(y));
                 if (CountFreeNearestCell(y) == 1)
                 {
@@ -334,12 +343,13 @@ public class FillWordCreator : MonoBehaviour
         {
             if (x.Count < min)
             {
-               // Debug.Log(x.Count + " > " + min +" = false");
-                return false;
+                Debug.Log(x.Count + " < " + min +" = false");
+                return true;
             }
         }
        // Debug.Log("true");
-            return true;
+ 
+        return false;
     }
 
     public void AddNewWord()
@@ -347,12 +357,26 @@ public class FillWordCreator : MonoBehaviour
         ;
         //вставить функцию определения минимального слова в словаре
         CheckMinCountCellInZone(lengthOfsmolestWord);
+        CheckTupicalCell(mass);
 
+
+        //функция пересчета свободніх ячеек
 
         int startCell = 0;
+        Debug.Log("deadcell count = " + deadEndCell.Count);
+
+        string s = "";
+        foreach (var item in deadEndCell)
+        {
+            s += item.ToString() + " ";
+        }
+        Debug.Log(s);
+
 
         if (deadEndCell.Count > 0)
         {
+            //метод проверки на количество тупиковых ячеек в зоне и в зависимости от возможности внести слово возвращает флаг
+            Debug.Log("deadcell = " + deadEndCell[0]);
             startCell = deadEndCell[0];
 
         }
@@ -363,47 +387,71 @@ public class FillWordCreator : MonoBehaviour
                 startCell = Random.Range(0, mass.GetLength(0) * mass.GetLength(1));
                 if (GetValueByNubber(startCell) == 0)
                 {
+                    Debug.Log("random");
                     break;
                 }
             }
         }
 
-        //Debug.Log("Start cell = " + startCell);
-        SetValueByNumber(1, startCell, ref mass);
+        SetValueByNumber(2, startCell, ref mass);
 
         int x = startCell;
-        int[,] buffMas = mass;
-        bool checker = true;
-        int counter = 0;
-        int counter2 = 0;
-        while (checker)
+        int[,] buffMas = new int [mass.GetLength(0),mass.GetLength(1)];
+
+
+        string s2 = "";
+        for (int i = 0; i < mass.GetLength(0); i++)
         {
-            mass = buffMas;
-            counter = 0;
-            for (int i = 0; i < numberLetersInFirstWord - 1; i++)
+            for (int j = 0; j < mass.GetLength(1); j++)
             {
-                x = GetNextCell(mass, x);
-                if (x == -1)
-                {
-                    Debug.Log(" x == -1");
-                    //CellGrid.transform.GetChild(x).GetComponent<Image>().color = Color.red;
-                    break; 
-                }
-                counter++;
-                //Debug.Log("Next cell = " + x);
-                SetValueByNumber(2, x, ref mass);
-                CellGrid.transform.GetChild(x).transform.GetChild(0).GetComponent<Text>().text = 2.ToString();
-                CellGrid.transform.GetChild(x).GetComponent<Image>().color = Color.green;
+                s2 += mass[i, j].ToString() + " ";
             }
-            if(counter == numberLetersInFirstWord)
-                checker = false;
-            counter2++;
-            if (counter2 == 1000)
+            s2 += "\n";
+        }
+        Debug.Log(s2);
+       // ReturnToPreMass(mass, ref buffMas);
+
+    
+        SetColors(mass);
+    }
+
+    void ReturnToPreMass(int[,] x, ref int[,] y)
+    {
+        for (int i = 0; i < x.GetLength(0); i++)
+        {
+            for (int j = 0; j < x.GetLength(1); j++)
             {
-                checker = false;
-                Debug.Log("eror");
+                y[i, j] = x[i, j];
             }
         }
+    }
+    void SetColors(int[,] x)
+    {
 
+
+        for (int i = 0; i < x.GetLength(0); i++)
+        {
+            for (int j = 0; j < x.GetLength(1); j++)
+            {
+                int num = GetNumberByPosInArray(i, j);
+                switch (mass[i,j])
+                {
+                    case 0:
+                        CellGrid.transform.GetChild(num).GetComponent<Image>().color = Color.white;
+                        break;
+                    case 1:
+                        CellGrid.transform.GetChild(num).GetComponent<Image>().color = Color.blue;
+                        break;
+                    case 2:
+                        CellGrid.transform.GetChild(num).GetComponent<Image>().color = Color.green;
+                        break;
+                    case 3:
+                        CellGrid.transform.GetChild(num).GetComponent<Image>().color = Color.cyan;
+                        break;
+                }
+            }
+           
+        }
+        
     }
 }
