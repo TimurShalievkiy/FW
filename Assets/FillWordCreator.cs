@@ -37,6 +37,7 @@ public class FillWordCreator : MonoBehaviour
     {
         numberLetersInFirstWord = (int)NumberFirstCell.value;
     }
+
     public void ResetFillWord()
     {
        // Debug.Log("Reset");
@@ -56,6 +57,7 @@ public class FillWordCreator : MonoBehaviour
 
        
     }
+
     void SetCellNumbers()
     {
         int index = 0;
@@ -69,6 +71,7 @@ public class FillWordCreator : MonoBehaviour
             }
         }
     }
+
     void FillingFirstWord(int[,] mass, int numberOfLetters)
     {
         int startCell = Random.Range(0, mass.GetLength(0) * mass.GetLength(1));
@@ -204,7 +207,7 @@ public class FillWordCreator : MonoBehaviour
             str += "\n";
         }
         
-       Debug.Log("List count = " + ListPassedСells.Count + " \n" + str);
+      // Debug.Log("List count = " + ListPassedСells.Count + " \n" + str);
         return true;
     }
 
@@ -323,6 +326,7 @@ public class FillWordCreator : MonoBehaviour
        // Debug.Log("number = " + number + " count = " + count );
         return count;
     }
+
     void CheckTupicalCell(int[,] mass)
     {
         deadEndCell.Clear();
@@ -355,7 +359,7 @@ public class FillWordCreator : MonoBehaviour
 
     public void AddNewWord()
     {
-        ;
+
         //вставить функцию определения минимального слова в словаре
 
        
@@ -365,7 +369,6 @@ public class FillWordCreator : MonoBehaviour
         CheckTupicalCell(mass);
 
 
-        //функция пересчета свободных ячеек
 
         int startCell = 0;
 
@@ -386,7 +389,7 @@ public class FillWordCreator : MonoBehaviour
             if (deadEndCell.Count > 0)
             {
                 //метод проверки на количество тупиковых ячеек в зоне и в зависимости от возможности внести слово возвращает флаг
-                Debug.Log("deadcell = " + deadEndCell[0]);
+                //Debug.Log("deadcell = " + deadEndCell[0]);
                 startCell = deadEndCell[0];
 
             }
@@ -405,12 +408,37 @@ public class FillWordCreator : MonoBehaviour
         }
         //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-        SetValueByNumber(2, startCell, ref mass);
+
+        
 
         int x = startCell;
         int[,] buffMas = new int [mass.GetLength(0),mass.GetLength(1)];
 
+       
 
+        Debug.Log(lengthOfsmolestWord);
+
+        //определить количество букв в заполняемом слове 
+        //
+        //
+        //
+        //
+
+        SetValueByNumber(2, x, ref mass);
+
+        for (int i = 0; i < lengthOfsmolestWord - 1; i++)
+        {
+            x = GetNextCell(mass, x);
+            if (x == -1)
+            {
+                Debug.Log("Error");
+                ResetFillWord();
+                break;
+            }
+            Debug.Log("Set = " + x);
+            SetValueByNumber(2, x, ref mass);
+
+        }
 
         // ReturnToPreMass(mass, ref buffMas);
         ShowMassInDebugLog();
