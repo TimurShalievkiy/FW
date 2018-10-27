@@ -170,7 +170,8 @@ public class FillWordCreator : MonoBehaviour
 
     bool CheckEmptyCells(int[,] mass, int min)
     {
-
+        ListPassedСells = new List<List<int>>();
+        rankOfListPassedCell = 0;
         for (int i = 0; i < mass.GetLength(0); i++)
         {
             for (int j = 0; j < mass.GetLength(1); j++)
@@ -356,42 +357,53 @@ public class FillWordCreator : MonoBehaviour
     {
         ;
         //вставить функцию определения минимального слова в словаре
+
+       
+        CheckEmptyCells(mass, lengthOfsmolestWord);
+        
         CheckMinCountCellInZone(lengthOfsmolestWord);
         CheckTupicalCell(mass);
 
 
-        //функция пересчета свободніх ячеек
+        //функция пересчета свободных ячеек
 
         int startCell = 0;
-        Debug.Log("deadcell count = " + deadEndCell.Count);
 
-        string s = "";
-        foreach (var item in deadEndCell)
+        //Debug.Log("deadcell count = " + deadEndCell.Count);
+
+
+
+        string s = ""; 
+        foreach (var item in deadEndCell)//вывод номеров пустых  ячеек
         {
             s += item.ToString() + " ";
         }
         Debug.Log(s);
 
-
-        if (deadEndCell.Count > 0)
+        //-------------------получение стартовой ячейки-----------------------------
+        if (ListPassedСells.Count > 0)
         {
-            //метод проверки на количество тупиковых ячеек в зоне и в зависимости от возможности внести слово возвращает флаг
-            Debug.Log("deadcell = " + deadEndCell[0]);
-            startCell = deadEndCell[0];
-
-        }
-        else
-        {
-            while (true)
+            if (deadEndCell.Count > 0)
             {
-                startCell = Random.Range(0, mass.GetLength(0) * mass.GetLength(1));
-                if (GetValueByNubber(startCell) == 0)
+                //метод проверки на количество тупиковых ячеек в зоне и в зависимости от возможности внести слово возвращает флаг
+                Debug.Log("deadcell = " + deadEndCell[0]);
+                startCell = deadEndCell[0];
+
+            }
+            else
+            {
+                while (true)
                 {
-                    Debug.Log("random");
-                    break;
+                    startCell = Random.Range(0, mass.GetLength(0) * mass.GetLength(1));
+                    if (GetValueByNubber(startCell) == 0)
+                    {
+                        Debug.Log("random");
+                        break;
+                    }
                 }
             }
         }
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
         SetValueByNumber(2, startCell, ref mass);
 
@@ -399,19 +411,11 @@ public class FillWordCreator : MonoBehaviour
         int[,] buffMas = new int [mass.GetLength(0),mass.GetLength(1)];
 
 
-        string s2 = "";
-        for (int i = 0; i < mass.GetLength(0); i++)
-        {
-            for (int j = 0; j < mass.GetLength(1); j++)
-            {
-                s2 += mass[i, j].ToString() + " ";
-            }
-            s2 += "\n";
-        }
-        Debug.Log(s2);
-       // ReturnToPreMass(mass, ref buffMas);
 
-    
+        // ReturnToPreMass(mass, ref buffMas);
+        ShowMassInDebugLog();
+
+
         SetColors(mass);
     }
 
@@ -453,5 +457,19 @@ public class FillWordCreator : MonoBehaviour
            
         }
         
+    }
+
+    void ShowMassInDebugLog()
+    {
+        string s2 = "";
+        for (int i = 0; i < mass.GetLength(0); i++)
+        {
+            for (int j = 0; j < mass.GetLength(1); j++)
+            {
+                s2 += mass[i, j].ToString() + " ";
+            }
+            s2 += "\n";
+        }
+        Debug.Log(s2);
     }
 }
