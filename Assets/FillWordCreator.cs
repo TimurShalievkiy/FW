@@ -19,6 +19,10 @@ public class FillWordCreator : MonoBehaviour
     int rankOfListPassedCell = 0; // номер пустой зоны
     int lengthOfsmolestWord = 3;
 
+    public int columns = 5;
+    public int rows = 6;
+
+
     // Use this for initialization
     void Start()
     {
@@ -40,11 +44,11 @@ public class FillWordCreator : MonoBehaviour
 
     public void ResetFillWord()
     {
-       // Debug.Log("Reset");
+        // Debug.Log("Reset");
         do
         {
-           // Debug.Log("Reset in while");
-            mass = new int[5, 5];
+            // Debug.Log("Reset in while");
+            mass = new int[columns, rows];
             ListPassedСells = new List<List<int>>();
             deadEndCell = new List<int>();
             rankOfListPassedCell = 0;
@@ -53,9 +57,9 @@ public class FillWordCreator : MonoBehaviour
             FillingFirstWord(mass, numberLetersInFirstWord);
 
 
-        } while (!CheckEmptyCells(mass, lengthOfsmolestWord) );
+        } while (!CheckEmptyCells(mass, lengthOfsmolestWord));
 
-       
+
     }
 
     void SetCellNumbers()
@@ -93,15 +97,15 @@ public class FillWordCreator : MonoBehaviour
             //Debug.Log("Next cell = " + x);
             //CellGrid.transform.GetChild(x).GetComponent<Image>().color = Color.blue;
             SetValueByNumber(1, x, ref mass);
-            
+
         }
         SetColors(mass);
     }
 
     void SetValueByNumber(int value, int number, ref int[,] mass)
     {
-        int i = number / mass.GetLength(0);
-        int j = number - i * mass.GetLength(0);
+        int i = number / mass.GetLength(1);
+        int j = number - i * mass.GetLength(1);
         mass[i, j] = value;
 
         //CellGrid.transform.GetChild(number).GetComponent<Image>().color = Color.blue;
@@ -110,46 +114,61 @@ public class FillWordCreator : MonoBehaviour
 
     int GetNextCell(int[,] mass, int numberCurrentCell)
     {
-        int i = numberCurrentCell / mass.GetLength(0);
-        int j = numberCurrentCell - i * mass.GetLength(0);
+        int i = numberCurrentCell / mass.GetLength(1);
+        int j = numberCurrentCell - i * mass.GetLength(1);
 
         int[] dir = { 0, 0, 0, 0 };
 
         int index = 0;
 
-        int up = (mass.GetLength(0) * (i - 1)) + j;
-        //Debug.Log("Current = " + numberCurrentCell + " Up cell = " + up);
-        if (i - 1 >= 0 && GetValueByNubber(up) == 0)
+
+        if (i - 1 >= 0)
         {
-            // Debug.Log("Up cell Free ");
-            dir[index] = up;
-            index++;
+            int up = GetNumberByPosInArray(i - 1, j);
+
+            //Debug.Log("Current = " + numberCurrentCell + " Up cell = " + up);
+            if (GetValueByNubber(up) == 0)
+            {
+                // Debug.Log("Up cell Free ");
+                dir[index] = up;
+                index++;
+            }
         }
 
-        int down = (mass.GetLength(0) * (i + 1)) + j;
-        if (i + 1 < mass.GetLength(0) && GetValueByNubber(down) == 0)
+        if (i + 1 < mass.GetLength(0))
         {
-            //Debug.Log("down cell Free ");
-            dir[index] = down;
-            index++;
+            int down = GetNumberByPosInArray(i + 1, j);
+            if (GetValueByNubber(down) == 0)
+            {
+                //Debug.Log("down cell Free ");
+                dir[index] = down;
+                index++;
+            }
         }
 
-        int left = (mass.GetLength(0) * i) + j - 1;
-        if (j - 1 >= 0 && GetValueByNubber(left) == 0)
+        if (j - 1 >= 0)
         {
-            //Debug.Log("left cell Free ");
-            dir[index] = left;
-            index++;
+            //int left = (mass.GetLength(0) * i) + j - 1;
+            int left = GetNumberByPosInArray(i, j - 1);
+            if (GetValueByNubber(left) == 0)
+            {
+                //Debug.Log("left cell Free ");
+                dir[index] = left;
+                index++;
+            }
         }
 
-        int right = (mass.GetLength(0) * i) + j + 1;
-        if (j + 1 < mass.GetLength(1) && GetValueByNubber(right) == 0)
+        if (j + 1 < mass.GetLength(1))
         {
-            //Debug.Log("right cell Free ");
-            dir[index] = right;
-            index++;
+            //int right = (mass.GetLength(0) * i) + j + 1;
+            int right = GetNumberByPosInArray(i, j + 1);
+            if (GetValueByNubber(right) == 0)
+            {
+                //Debug.Log("right cell Free ");
+                dir[index] = right;
+                index++;
+            }
         }
-
         if (index == 0)
             return -1;
 
@@ -160,20 +179,23 @@ public class FillWordCreator : MonoBehaviour
 
     int GetValueByNubber(int number)
     {
-        int i = number / mass.GetLength(0);
+        int i = number / mass.GetLength(1);
         int j = number - i * mass.GetLength(1);
+
+       // Debug.Log("number = " + number + " i = " + i + " j = " + j);
         return mass[i, j];
     }
 
     int GetNumberByPosInArray(int i, int j)
     {
 
-        return i* mass.GetLength(0) +j;
+        return i * mass.GetLength(1) + j;
     }
 
     bool CheckEmptyCells(int[,] mass, int min)
     {
-        ListPassedСells = new List<List<int>>();
+        //ListPassedСells = new List<List<int>>();
+        ListPassedСells.Clear();
         rankOfListPassedCell = 0;
         for (int i = 0; i < mass.GetLength(0); i++)
         {
@@ -181,11 +203,12 @@ public class FillWordCreator : MonoBehaviour
             {
                 if (mass[i, j] == 0)
                 {
-                    if (!FindCellInList(mass.GetLength(0) * i + j))
+                    int cellNum = GetNumberByPosInArray(i, j);
+                    if (!FindCellInList(cellNum))
                     {
                         ListPassedСells.Add(new List<int>());
-                        ListPassedСells[rankOfListPassedCell].Add(mass.GetLength(0) * i + j);
-                        CheckNearest(mass.GetLength(0) * i + j);
+                        ListPassedСells[rankOfListPassedCell].Add(cellNum);
+                        CheckNearest(cellNum);
                         rankOfListPassedCell++;
                     }
                 }
@@ -206,8 +229,8 @@ public class FillWordCreator : MonoBehaviour
             }
             str += "\n";
         }
-        
-      // Debug.Log("List count = " + ListPassedСells.Count + " \n" + str);
+
+        // Debug.Log("List count = " + ListPassedСells.Count + " \n" + str);
         return true;
     }
 
@@ -226,13 +249,13 @@ public class FillWordCreator : MonoBehaviour
 
     void CheckNearest(int number)
     {
-        int i = number / mass.GetLength(0);
-        int j = number - i * mass.GetLength(0);
+        int i = number / mass.GetLength(1);
+        int j = number - i * mass.GetLength(1);
         //проверка вурхней ячейки на пустоту и запись
         if (i - 1 >= 0)
         {
-            int up = (mass.GetLength(0) * (i - 1)) + j;
-
+            //int up = (mass.GetLength(0) * (i - 1)) + j;
+            int up = GetNumberByPosInArray(i - 1, j);
             if (GetValueByNubber(up) == 0 && !FindCellInList(up))
             {
                 //Debug.Log("up = " + up + " number = " + number + " i = " + i + " j = " + j);
@@ -244,7 +267,8 @@ public class FillWordCreator : MonoBehaviour
         //проверка нижней ячейки на пустоту и запись
         if (i + 1 < mass.GetLength(0))
         {
-            int down = (mass.GetLength(0) * (i + 1)) + j;
+            //int down = (mass.GetLength(0) * (i + 1)) + j;
+            int down = GetNumberByPosInArray(i + 1, j);
 
             if (GetValueByNubber(down) == 0 && !FindCellInList(down))
             {
@@ -257,7 +281,8 @@ public class FillWordCreator : MonoBehaviour
         //проверка левой ячейки на пустоту и запись
         if (j - 1 >= 0)
         {
-            int left = (mass.GetLength(0) * i) + j - 1;
+            // int left = (mass.GetLength(0) * i) + j - 1;
+            int left = GetNumberByPosInArray(i, j - 1);
             // Debug.Log("ltft = " + left + " number = " + number + " i = " + i + " j = " + j);
             if (GetValueByNubber(left) == 0 && !FindCellInList(left))
             {
@@ -269,7 +294,8 @@ public class FillWordCreator : MonoBehaviour
         //проверка правой ячейки на пустоту и запись
         if (j + 1 < mass.GetLength(1))
         {
-            int right = (mass.GetLength(0) * i) + j + 1;
+            //int right = (mass.GetLength(0) * i) + j + 1;
+            int right = GetNumberByPosInArray(i, j + 1);
             // Debug.Log("right = " + right + " number = " + number + " i = " + i + " j = " + j);
             if (GetValueByNubber(right) == 0 && !FindCellInList(right))
             {
@@ -282,16 +308,17 @@ public class FillWordCreator : MonoBehaviour
 
     int CountFreeNearestCell(int number)
     {
-        int i = number / mass.GetLength(0);
-        int j = number - i * mass.GetLength(0);
+        int i = number / mass.GetLength(1);
+        int j = number - i * mass.GetLength(1);
 
         int count = 0;
-        
+
         //проверка вурхней ячейки на пустоту и запись
         if (i - 1 >= 0)
-        {         
-            int up = (mass.GetLength(0) * (i - 1)) + j;
-            if (GetValueByNubber(up) == 0 )
+        {
+            //int up = (mass.GetLength(0) * (i - 1)) + j;
+            int up = GetNumberByPosInArray(i - 1, j);
+            if (GetValueByNubber(up) == 0)
             {
                 count++;
             }
@@ -299,8 +326,9 @@ public class FillWordCreator : MonoBehaviour
         //проверка нижней ячейки на пустоту и запись
         if (i + 1 < mass.GetLength(0))
         {
-            int down = (mass.GetLength(0) * (i + 1)) + j;
-            if (GetValueByNubber(down) == 0 )
+            //int down = (mass.GetLength(0) * (i + 1)) + j;
+            int down = GetNumberByPosInArray(i + 1, j);
+            if (GetValueByNubber(down) == 0)
             {
                 count++;
             }
@@ -308,8 +336,9 @@ public class FillWordCreator : MonoBehaviour
         //проверка левой ячейки на пустоту и запись
         if (j - 1 >= 0)
         {
-            int left = (mass.GetLength(0) * i) + j - 1;
-            if (GetValueByNubber(left) == 0 )
+            // int left = (mass.GetLength(0) * i) + j - 1;
+            int left = GetNumberByPosInArray(i, j - 1);
+            if (GetValueByNubber(left) == 0)
             {
                 count++;
             }
@@ -317,43 +346,46 @@ public class FillWordCreator : MonoBehaviour
         //проверка правой ячейки на пустоту и запись
         if (j + 1 < mass.GetLength(1))
         {
-            int right = (mass.GetLength(0) * i) + j + 1;
-            if (GetValueByNubber(right) == 0 )
+            //int right = (mass.GetLength(0) * i) + j + 1;
+            int right = GetNumberByPosInArray(i, j + 1);
+            if (GetValueByNubber(right) == 0)
             {
                 count++;
             }
         }
-       // Debug.Log("number = " + number + " count = " + count );
+        // Debug.Log("number = " + number + " count = " + count );
         return count;
     }
 
     void CheckTupicalCell(int[,] mass)
     {
         deadEndCell.Clear();
-        foreach (var x in ListPassedСells)    
+        foreach (var x in ListPassedСells)
             foreach (var y in x)
-            {           
+            {
                 //Debug.Log("Count = " + CountFreeNearestCell(y));
                 if (CountFreeNearestCell(y) == 1)
                 {
                     deadEndCell.Add(y);
                 }
-            }       
+            }
     }
 
     bool CheckMinCountCellInZone(int min)
     {
-       
+
+   
+
         foreach (var x in ListPassedСells)
         {
             if (x.Count < min)
             {
-                Debug.Log(x.Count + " < " + min +" = false");
+                Debug.Log(x.Count + " < " + min + " = false");
                 return true;
             }
         }
-       // Debug.Log("true");
- 
+        // Debug.Log("true");
+
         return false;
     }
 
@@ -362,9 +394,9 @@ public class FillWordCreator : MonoBehaviour
 
         //вставить функцию определения минимального слова в словаре
 
-       
+
         CheckEmptyCells(mass, lengthOfsmolestWord);
-        
+
         CheckMinCountCellInZone(lengthOfsmolestWord);
         CheckTupicalCell(mass);
 
@@ -376,7 +408,7 @@ public class FillWordCreator : MonoBehaviour
 
 
 
-        string s = ""; 
+        string s = "";
         foreach (var item in deadEndCell)//вывод номеров пустых  ячеек
         {
             s += item.ToString() + " ";
@@ -409,12 +441,12 @@ public class FillWordCreator : MonoBehaviour
         //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-        
+
 
         int x = startCell;
-        int[,] buffMas = new int [mass.GetLength(0),mass.GetLength(1)];
+        int[,] buffMas = new int[mass.GetLength(0), mass.GetLength(1)];
 
-       
+
 
         Debug.Log(lengthOfsmolestWord);
 
@@ -457,6 +489,7 @@ public class FillWordCreator : MonoBehaviour
             }
         }
     }
+
     void SetColors(int[,] x)
     {
 
@@ -466,7 +499,7 @@ public class FillWordCreator : MonoBehaviour
             for (int j = 0; j < x.GetLength(1); j++)
             {
                 int num = GetNumberByPosInArray(i, j);
-                switch (mass[i,j])
+                switch (mass[i, j])
                 {
                     case 0:
                         CellGrid.transform.GetChild(num).GetComponent<Image>().color = Color.white;
@@ -482,9 +515,9 @@ public class FillWordCreator : MonoBehaviour
                         break;
                 }
             }
-           
+
         }
-        
+
     }
 
     void ShowMassInDebugLog()
