@@ -64,6 +64,7 @@
     <Compile Include="Assets\Animals.cs" />
     <Compile Include="Assets\DictionaryController.cs" />
     <Compile Include="Assets\FillWordCreator.cs" />
+    <Compile Include="Assets\GameProcess.cs" />
     <Compile Include="Assets\Word.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>D:/MyProjects/FW/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>

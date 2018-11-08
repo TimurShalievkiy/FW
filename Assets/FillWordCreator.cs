@@ -37,10 +37,10 @@ public class FillWordCreator : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        // ResetFillWord();
-    }
+    //void Update()
+    //{
+    //    // ResetFillWord();
+    //}
 
 
     public void ResetFillWord()
@@ -54,6 +54,9 @@ public class FillWordCreator : MonoBehaviour
             ListPassedСells = new List<List<int>>();
             ListPassedСells.Clear();
             deadEndCell = new List<int>();
+            GameProcess.cellNumbers = new List<List<int>>();
+            GameProcess.cellNumbers.Clear();
+
             rankOfListPassedCell = 0;
             countOfAddedWord = 1;
             SetCellNumbers();
@@ -70,8 +73,8 @@ public class FillWordCreator : MonoBehaviour
         {
             AddNewWord();
         }
-       // ShowMassInDebugLog();
-
+        // ShowMassInDebugLog();
+        //GameProcess.ShowCellNumbers(); 
     }
 
     void SetCellNumbers()
@@ -125,6 +128,23 @@ public class FillWordCreator : MonoBehaviour
         int i = number / mass.GetLength(1);
         int j = number - i * mass.GetLength(1);
         mass[i, j] = value;
+        if (GameProcess.cellNumbers.Count == 0)
+        {
+            GameProcess.cellNumbers.Add(new List<int>());
+            GameProcess.cellNumbers[0].Add(GetNumberByPosInArray(i, j));
+        }
+        else
+        {
+            if (GetValueByNubber(GameProcess.cellNumbers[GameProcess.cellNumbers.Count - 1][0]) != GetValueByNubber(number))
+            {
+                GameProcess.cellNumbers.Add(new List<int>());
+                GameProcess.cellNumbers[GameProcess.cellNumbers.Count - 1].Add(GetNumberByPosInArray(i, j));
+            }
+            else {
+                GameProcess.cellNumbers[GameProcess.cellNumbers.Count - 1].Add(GetNumberByPosInArray(i, j));
+            }
+        }
+        
 
         //CellGrid.transform.GetChild(number).GetComponent<Image>().color = Color.blue;
         //CellGrid.transform.GetChild(number).transform.GetChild(0).GetComponent<Text>().
@@ -616,8 +636,7 @@ public class FillWordCreator : MonoBehaviour
         //Debug.Log("count = " + count);
         return ListPassedСells[count].Count;
     }
-
-
+     
   
   
 }

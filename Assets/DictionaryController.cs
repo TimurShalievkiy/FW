@@ -10,8 +10,7 @@ public  class DictionaryController : MonoBehaviour {
     public  enum Topic { Random = 0, Animals = 1 }
 
    static List<Word> words;
-    static int max = 0;
-   static int min = 0;
+
     static Topic currentTopic = Topic.Animals;
 
 
@@ -55,6 +54,11 @@ public  class DictionaryController : MonoBehaviour {
                 return a.words;
         }
         return null;
+    }
+
+    public static string GetordByTheNumberOfLetters(int num)
+    {
+        return words.Find(x => x.numberOfLetters == num).word;
     }
 
 
