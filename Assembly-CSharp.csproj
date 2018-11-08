@@ -61,9 +61,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Animals.cs" />
     <Compile Include="Assets\DictionaryController.cs" />
-    <Compile Include="Assets\FillWord.cs" />
     <Compile Include="Assets\FillWordCreator.cs" />
+    <Compile Include="Assets\Word.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>D:/MyProjects/FW/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>

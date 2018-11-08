@@ -1,55 +1,65 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
-public class DictionaryController : MonoBehaviour {
+public  class DictionaryController : MonoBehaviour {
 
-    public  enum Сhapter {Random = 0, Animals = 1 }
+   // public GameObject Animals;
 
-    static string[] words = { "паук","заяц","крыса","ехидна","Савинья","лисица","олень",
-        "барсук","буйвол","бурундук","волк","гепард","лев","слон","вол",
-        "собака","кошка","мышь","жираф "};
+    public  enum Topic { Random = 0, Animals = 1 }
 
-    static Сhapter currentChapter = Сhapter.Random;
+   static List<Word> words;
+    static int max = 0;
+   static int min = 0;
+    static Topic currentTopic = Topic.Animals;
+
+
     // Use this for initialization
     void Start () {
-		
-	}
+        words = FillTheWordsOnTheCurrentTopic();
+        //max = 
+        //min = 
+    }
 
     public static int GetMin()
     {
-        int min = 100;
-        for (int i = 0; i < words.Length; i++)
-        {
-            if (words[i].Length < min)
-                min = words[i].Length;
-        }
-        //Debug.Log("Min = " + min);
-        return min;
+        return words.Min(x => x.numberOfLetters); ;
     }
 
     public static int GetMax()
     {
-        int max = -1;
-        for (int i = 0; i < words.Length; i++)
-        {
-            if (words[i].Length > max)
-                max = words[i].Length;
-        }
-        //Debug.Log("Max = " + max);
-        return max;
+        return words.Max(x => x.numberOfLetters); ;
     }
 
     public static int GetMaxWithRestriction(int res)
     {
-        int max = -1;
-        for (int i = 0; i < words.Length; i++)
-        {
-            if (words[i].Length > max && words[i].Length <= res)
-                max = words[i].Length;
-        }
-        return max;
+        //int max = -1;
+        //for (int i = 0; i < words.Length; i++)
+        //{
+        //    if (words[i].Length > max && words[i].Length <= res)
+        //        max = words[i].Length;
+        //}
+        //return max;
+        return 0;
     }
+
+     static List<Word> FillTheWordsOnTheCurrentTopic()
+    {
+        switch (currentTopic)
+        {
+            case Topic.Random:
+                break;
+            case Topic.Animals:
+                Animals a = new Animals();
+                return a.words;
+        }
+        return null;
+    }
+
+
+
+
 
 
 

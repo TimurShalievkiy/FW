@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,7 +16,7 @@ public class FillWordCreator : MonoBehaviour
 
     int[,] mass;
 
-    public int numberLetersInFirstWord = 6;
+    //public int numberLetersInFirstWord = 6;
     int rankOfListPassedCell = 0; // номер пустой зоны
  
 
@@ -29,8 +30,8 @@ public class FillWordCreator : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        InvokeRepeating("ResetFillWord", 1.0f, 0.2f);
-       // ResetFillWord();
+        //InvokeRepeating("ResetFillWord", 1.0f, 0.2f);
+        // ResetFillWord();
 
 
     }
@@ -40,7 +41,6 @@ public class FillWordCreator : MonoBehaviour
     {
         // ResetFillWord();
     }
-
 
 
     public void ResetFillWord()
@@ -58,7 +58,7 @@ public class FillWordCreator : MonoBehaviour
             countOfAddedWord = 1;
             SetCellNumbers();
 
-            FillingFirstWord(mass, numberLetersInFirstWord);
+            FillingFirstWord(mass);
 
 
        // } while (!CheckEmptyCells(mass, min));
@@ -70,7 +70,7 @@ public class FillWordCreator : MonoBehaviour
         {
             AddNewWord();
         }
-
+       // ShowMassInDebugLog();
 
     }
 
@@ -88,7 +88,7 @@ public class FillWordCreator : MonoBehaviour
         }
     }
 
-    void FillingFirstWord(int[,] mass, int numberOfLetters)
+    void FillingFirstWord(int[,] mass )
     {
         int startCell = Random.Range(0, mass.GetLength(0) * mass.GetLength(1));
 
@@ -101,7 +101,7 @@ public class FillWordCreator : MonoBehaviour
         ListPassedСells.Clear();
         CheckEmptyCells(mass, DictionaryController.GetMin());
 
-        numberOfLetters = GetNumberLetersInWord(ListPassedСells[0].Count);
+        int numberOfLetters = GetNumberLetersInWord(ListPassedСells[0].Count);
 
        // Debug.Log("Numbers of letters = " + numberOfLetters);
 
@@ -540,7 +540,7 @@ public class FillWordCreator : MonoBehaviour
                         CellGrid.transform.GetChild(num).GetComponent<Image>().color = new Color(0.3f, 0.8f, 0.2f);
                         break;
                     case 9:
-                        CellGrid.transform.GetChild(num).GetComponent<Image>().color = new  Color(0.5f,0.5f,0.5f);
+                        CellGrid.transform.GetChild(num).GetComponent<Image>().color = new  Color(0.5f,0.9f,0.5f);
                         break;
                     case 10:
                         CellGrid.transform.GetChild(num).GetComponent<Image>().color = new Color(0.2f, 0.4f, 0.8f);
@@ -616,4 +616,8 @@ public class FillWordCreator : MonoBehaviour
         //Debug.Log("count = " + count);
         return ListPassedСells[count].Count;
     }
+
+
+  
+  
 }
