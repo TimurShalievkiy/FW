@@ -58,12 +58,19 @@ public class DictionaryController : MonoBehaviour
         return null;
     }
 
-    public static string GetordByTheNumberOfLetters(int num)
+    public static string GetordByTheNumberOfLetters(int num, List<string> usedWords)
     {
-        List<Word> buff = words.FindAll(x => x.numberOfLetters == num);
-        LoadPasedDictionary();
-        int min = 99999;
-        if (pasedWords.Count > 0)
+        List<Word> buff = new List<Word>();
+        int rand = 0;
+        int counter = 0;
+        do
+        {
+            buff = words.FindAll(x => x.numberOfLetters == num);
+            LoadPasedDictionary();
+            int min = 99999;
+            rand = 0;
+
+            if (pasedWords.Count > 0)
         {
                 for (int j = 0; j < pasedWords.Count; j++)
                 {
@@ -71,7 +78,7 @@ public class DictionaryController : MonoBehaviour
                 }
                 
             
-            int rand = 0;
+            
             if (buff.Count > 0)
             {               
                 rand = Random.Range(0, buff.Count); 
@@ -105,17 +112,30 @@ public class DictionaryController : MonoBehaviour
                     }
                 }
             }
-            //ShowInDebugPassedCell();
-            SavePasedDictionary();
-            return buff[rand].word;
+            
+            //SavePasedDictionary();
+            //return buff[rand].word;
         }
         else {
-            //Debug.Log("else");
-            int x = Random.Range(0, buff.Count);
-            pasedWords.Add(new PassedWord(buff[x].id, 1));
-            SavePasedDictionary();
-            return buff[x].word;
+            rand = Random.Range(0, buff.Count);
+            pasedWords.Add(new PassedWord(buff[rand].id, 1));
+            //SavePasedDictionary();
+            //return buff[rand].word; 
         }
+            counter++;
+            if (counter > 10)
+            {
+                //Debug.Log("break"); 
+                break;
+            }
+         
+        } while (!usedWords.Exists(x=>x == buff[rand].word));
+        if (usedWords.Exists(x => x == buff[rand].word))
+        {
+            return null;
+        }
+        SavePasedDictionary();
+        return buff[rand].word;
 
     }
     public void ClearPlayerPrefs()

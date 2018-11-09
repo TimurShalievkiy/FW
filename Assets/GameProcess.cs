@@ -8,12 +8,15 @@ public class GameProcess : MonoBehaviour
     public FillWordCreator creator;
     public GameObject CellGrid;
     public static List<List<int>> cellNumbers;
+    List<string> usedWords;
     int counter = 0;
     // Use this for initialization
     void Start()
     {
+        usedWords = new List<string>();
         //PlayerPrefs.DeleteAll();
         InvokeRepeating("SetGameGread", 1.0f, 0.7f);
+       
     }
      
     // Update is called once per frame
@@ -26,19 +29,19 @@ public class GameProcess : MonoBehaviour
         creator.ResetFillWord();
         FillTheCellsWithLetters();
 
-        counter++;
-        if (counter == 100)
-        {
-            string str = PlayerPrefs.GetString("Animals");
-            string[] str2 = str.Split(' ');
-            string str3 = "";
-            for (int i = 0; i < str2.Length - 1; i += 2)
-            {
-                str3 += str2[i] + " " + str2[i + 1] + "\n";
-            }
-            Debug.Log(str3);
-            counter = 0;
-        }
+        //counter++;
+        //if (counter == 100)
+        //{
+        //    string str = PlayerPrefs.GetString("Animals");
+        //    string[] str2 = str.Split(' ');
+        //    string str3 = "";
+        //    for (int i = 0; i < str2.Length - 1; i += 2)
+        //    {
+        //        str3 += str2[i] + " " + str2[i + 1] + "\n";
+        //    }
+        //    Debug.Log(str3);
+        //    counter = 0;
+        //}
     }
     public static void ShowCellNumbers()
     {
@@ -56,9 +59,19 @@ public class GameProcess : MonoBehaviour
 
     void FillTheCellsWithLetters()
     {
+        usedWords = new List<string>();
+        usedWords.Clear();
         foreach (var x in cellNumbers)
         {
-            string str = DictionaryController.GetordByTheNumberOfLetters(x.Count);
+   
+            string str =  DictionaryController.GetordByTheNumberOfLetters(x.Count, usedWords);
+            if (str == null)
+            {
+                SetGameGread();
+                return;
+            }
+            usedWords.Add(str);
+             
             int index = 0;
             foreach (var y in x)
             {
