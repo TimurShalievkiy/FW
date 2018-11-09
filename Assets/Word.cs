@@ -9,5 +9,6 @@ public class Word : MonoBehaviour {
     public int callNumber;
     public int numberOfLetters;
     public string word;
-    public string description;
+    public string description;  
 }
+

@@ -8,21 +8,37 @@ public class GameProcess : MonoBehaviour
     public FillWordCreator creator;
     public GameObject CellGrid;
     public static List<List<int>> cellNumbers;
+    int counter = 0;
     // Use this for initialization
     void Start()
     {
-        InvokeRepeating("SetGameGread", 1.0f, 0.5f);
+        //PlayerPrefs.DeleteAll();
+        InvokeRepeating("SetGameGread", 1.0f, 0.7f);
     }
-
+     
     // Update is called once per frame
     void Update()
     {
 
     }
-    public void SetGameGread()
+    public void SetGameGread() 
     {
         creator.ResetFillWord();
         FillTheCellsWithLetters();
+
+        counter++;
+        if (counter == 100)
+        {
+            string str = PlayerPrefs.GetString("Animals");
+            string[] str2 = str.Split(' ');
+            string str3 = "";
+            for (int i = 0; i < str2.Length - 1; i += 2)
+            {
+                str3 += str2[i] + " " + str2[i + 1] + "\n";
+            }
+            Debug.Log(str3);
+            counter = 0;
+        }
     }
     public static void ShowCellNumbers()
     {
