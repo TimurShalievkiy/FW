@@ -27,20 +27,26 @@ public class FillWordCreator : MonoBehaviour
 
     bool bildIsDone = false;
 
+    public struct MinList
+    {
+        public int engtn;
+        public int call;
+        public int count;
+
+        public MinList(int engtn, int call, int count)
+        {
+            this.engtn = engtn;
+            this.call = call;
+            this.count = count;
+        }
+    }
+
+    public static List<MinList> minList;
     // Use this for initialization
     void Start()
     {
         //InvokeRepeating("ResetFillWord", 1.0f, 0.2f);
-        // ResetFillWord();
-
-
     }
-
-    // Update is called once per frame
-    //void Update()
-    //{
-    //    // ResetFillWord();
-    //}
 
 
     public void ResetFillWord()
@@ -635,6 +641,13 @@ public class FillWordCreator : MonoBehaviour
         }
         //Debug.Log("count = " + count);
         return ListPassedСells[count].Count;
+    }
+
+
+    int GetMinByMinList()
+    {
+        minList = DictionaryController.GetMinList();
+        return 0;
     }
      
   

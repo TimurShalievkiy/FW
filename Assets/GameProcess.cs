@@ -15,7 +15,7 @@ public class GameProcess : MonoBehaviour
     {
         usedWords = new List<string>();
         //PlayerPrefs.DeleteAll();
-        InvokeRepeating("SetGameGread", 1.0f, 0.7f);
+       // InvokeRepeating("SetGameGread", 1.0f, 0.7f);
        
     }
      
@@ -29,19 +29,19 @@ public class GameProcess : MonoBehaviour
         creator.ResetFillWord();
         FillTheCellsWithLetters();
 
-        //counter++;
-        //if (counter == 100)
-        //{
-        //    string str = PlayerPrefs.GetString("Animals");
-        //    string[] str2 = str.Split(' ');
-        //    string str3 = "";
-        //    for (int i = 0; i < str2.Length - 1; i += 2)
-        //    {
-        //        str3 += str2[i] + " " + str2[i + 1] + "\n";
-        //    }
-        //    Debug.Log(str3);
-        //    counter = 0;
-        //}
+        counter++;
+        if (counter == 10) 
+        {
+            string str = PlayerPrefs.GetString("Animals");
+            string[] str2 = str.Split(' ');
+            string str3 = "";
+            for (int i = 0; i < str2.Length - 1; i += 2)
+            {
+                str3 += str2[i] + " " + str2[i + 1] + "\n";
+            }
+            Debug.Log(str3);
+            counter = 0;
+        }
     }
     public static void ShowCellNumbers()
     {
