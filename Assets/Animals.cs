@@ -9,19 +9,19 @@ public class Animals : MonoBehaviour {
     {
         words = new List<Word>();
 
-        words.Add(new Word { id = 346, callNumber = 0, numberOfLetters = 2, word = "Уж", description = "" });
-        words.Add(new Word { id = 524, callNumber = 0, numberOfLetters = 2, word = "Ёж", description = "" });
-        words.Add(new Word { id = 150, callNumber = 0, numberOfLetters = 3, word = "Ёрш", description = "" });
-        words.Add(new Word { id = 241, callNumber = 0, numberOfLetters = 3, word = "Лев", description = "" });
-        words.Add(new Word { id = 343, callNumber = 0, numberOfLetters = 3, word = "Тур", description = "" });
-        words.Add(new Word { id = 399, callNumber = 0, numberOfLetters = 3, word = "Ара", description = "" });
-        words.Add(new Word { id = 686, callNumber = 0, numberOfLetters = 3, word = "Рак", description = "" });
-        words.Add(new Word { id = 909, callNumber = 0, numberOfLetters = 3, word = "Жук", description = "" });
-        words.Add(new Word { id = 1024, callNumber = 0, numberOfLetters = 3, word = "Моа", description = "" });
-        words.Add(new Word { id = 1042, callNumber = 0, numberOfLetters = 3, word = "Оса", description = " " });
-        words.Add(new Word { id = 1072, callNumber = 0, numberOfLetters = 3, word = "Сип", description = "" });
-        words.Add(new Word { id = 1085, callNumber = 0, numberOfLetters = 3, word = "Сыч", description = "" });
-        words.Add(new Word { id = 1090, callNumber = 0, numberOfLetters = 3, word = "Тля", description = "" });
+        //words.Add(new Word { id = 346, callNumber = 0, numberOfLetters = 2, word = "Уж", description = "" });
+        //words.Add(new Word { id = 524, callNumber = 0, numberOfLetters = 2, word = "Ёж", description = "" });
+        //words.Add(new Word { id = 150, callNumber = 0, numberOfLetters = 3, word = "Ёрш", description = "" });
+        //words.Add(new Word { id = 241, callNumber = 0, numberOfLetters = 3, word = "Лев", description = "" });
+        //words.Add(new Word { id = 343, callNumber = 0, numberOfLetters = 3, word = "Тур", description = "" });
+        //words.Add(new Word { id = 399, callNumber = 0, numberOfLetters = 3, word = "Ара", description = "" });
+        //words.Add(new Word { id = 686, callNumber = 0, numberOfLetters = 3, word = "Рак", description = "" });
+        //words.Add(new Word { id = 909, callNumber = 0, numberOfLetters = 3, word = "Жук", description = "" });
+        //words.Add(new Word { id = 1024, callNumber = 0, numberOfLetters = 3, word = "Моа", description = "" });
+        //words.Add(new Word { id = 1042, callNumber = 0, numberOfLetters = 3, word = "Оса", description = " " });
+        //words.Add(new Word { id = 1072, callNumber = 0, numberOfLetters = 3, word = "Сип", description = "" });
+        //words.Add(new Word { id = 1085, callNumber = 0, numberOfLetters = 3, word = "Сыч", description = "" });
+        //words.Add(new Word { id = 1090, callNumber = 0, numberOfLetters = 3, word = "Тля", description = "" });
         words.Add(new Word { id = 114, callNumber = 0, numberOfLetters = 4, word = "Гнюс", description = "" });
         words.Add(new Word { id = 116, callNumber = 0, numberOfLetters = 4, word = "Гриф", description = "" });
         words.Add(new Word { id = 148, callNumber = 0, numberOfLetters = 4, word = "Елец", description = "" });

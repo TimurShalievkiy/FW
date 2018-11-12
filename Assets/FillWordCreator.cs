@@ -8,7 +8,7 @@ public class FillWordCreator : MonoBehaviour
 {
 
     public GameObject CellGrid; //
-   // public Slider NumberFirstCell;
+
 
     List<List<int>> ListPassedСells; // пройденые пустые ячейки с разделением на зоны
     List<int> deadEndCell; //тупиковые ячейки с которых удобнее всего начинать слова
@@ -18,7 +18,7 @@ public class FillWordCreator : MonoBehaviour
 
     //public int numberLetersInFirstWord = 6;
     int rankOfListPassedCell = 0; // номер пустой зоны
- 
+
 
     public int columns = 5;
     public int rows = 6;
@@ -27,15 +27,18 @@ public class FillWordCreator : MonoBehaviour
 
     bool bildIsDone = false;
 
+    public static int countOfResets = 0;
+
+
     public struct MinList
     {
-        public int engtn;
+        public int lengtn;
         public int call;
         public int count;
 
-        public MinList(int engtn, int call, int count)
+        public MinList(int lengtn, int call, int count)
         {
-            this.engtn = engtn;
+            this.lengtn = lengtn;
             this.call = call;
             this.count = count;
         }
@@ -45,32 +48,33 @@ public class FillWordCreator : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        minList = DictionaryController.GetMinList();
         //InvokeRepeating("ResetFillWord", 1.0f, 0.2f);
     }
 
 
     public void ResetFillWord()
     {
-        // Debug.Log("Reset");
-        int min = DictionaryController.GetMin();
+ 
         bildIsDone = false;
-        //do
-       // {
-            mass = new int[columns, rows];
-            ListPassedСells = new List<List<int>>();
-            ListPassedСells.Clear();
-            deadEndCell = new List<int>();
-            GameProcess.cellNumbers = new List<List<int>>();
-            GameProcess.cellNumbers.Clear();
 
-            rankOfListPassedCell = 0;
-            countOfAddedWord = 1;
-            SetCellNumbers();
+       // Debug.Log("reset--------------------------------");
+        countOfResets++;
+        mass = new int[columns, rows];
+        ListPassedСells = new List<List<int>>();
+        ListPassedСells.Clear();
+        deadEndCell = new List<int>();
+        GameProcess.cellNumbers = new List<List<int>>();
+        GameProcess.cellNumbers.Clear();
 
-            FillingFirstWord(mass);
+        minList = DictionaryController.GetMinList();
+        int min = GetMinByMinList();
 
+        rankOfListPassedCell = 0;
+        countOfAddedWord = 1;
+        SetCellNumbers();
 
-       // } while (!CheckEmptyCells(mass, min));
+        FillingFirstWord(mass);
 
         countOfAddedWord++;
 
@@ -97,7 +101,7 @@ public class FillWordCreator : MonoBehaviour
         }
     }
 
-    void FillingFirstWord(int[,] mass )
+    void FillingFirstWord(int[,] mass)
     {
         int startCell = Random.Range(0, mass.GetLength(0) * mass.GetLength(1));
 
@@ -108,13 +112,11 @@ public class FillWordCreator : MonoBehaviour
         int x = startCell;
 
         ListPassedСells.Clear();
-        CheckEmptyCells(mass, DictionaryController.GetMin());
+        CheckEmptyCells(mass, GetMinByMinList());
 
         int numberOfLetters = GetNumberLetersInWord(ListPassedСells[0].Count);
 
-       // Debug.Log("Numbers of letters = " + numberOfLetters);
-
-        for (int i = 0; i < numberOfLetters-1 ; i++)
+        for (int i = 0; i < numberOfLetters - 1; i++)
         {
             x = GetNextCell(mass, x);
             if (x == -1)
@@ -146,11 +148,12 @@ public class FillWordCreator : MonoBehaviour
                 GameProcess.cellNumbers.Add(new List<int>());
                 GameProcess.cellNumbers[GameProcess.cellNumbers.Count - 1].Add(GetNumberByPosInArray(i, j));
             }
-            else {
+            else
+            {
                 GameProcess.cellNumbers[GameProcess.cellNumbers.Count - 1].Add(GetNumberByPosInArray(i, j));
             }
         }
-        
+
 
         //CellGrid.transform.GetChild(number).GetComponent<Image>().color = Color.blue;
         //CellGrid.transform.GetChild(number).transform.GetChild(0).GetComponent<Text>().
@@ -238,7 +241,6 @@ public class FillWordCreator : MonoBehaviour
 
     bool CheckEmptyCells(int[,] mass, int min)
     {
-        //ListPassedСells = new List<List<int>>();
         ListPassedСells.Clear();
         rankOfListPassedCell = 0;
         for (int i = 0; i < mass.GetLength(0); i++)
@@ -263,23 +265,11 @@ public class FillWordCreator : MonoBehaviour
         {
             return true;
         }
-        if (CheckMinCountCellInZone(DictionaryController.GetMin()))
+        if (CheckMinCountCellInZone(GetMinByMinList()))
         {
             return false;
         }
-     
 
-        string str = "";
-        foreach (var x in ListPassedСells)
-        {
-            foreach (var y in x)
-            {
-                str += y.ToString() + " ";
-            }
-            str += "\n";
-        }
-
-        // Debug.Log("List count = " + ListPassedСells.Count + " \n" + str);
         return true;
     }
 
@@ -288,11 +278,12 @@ public class FillWordCreator : MonoBehaviour
         if (ListPassedСells.Count == 0)
             return false;
 
-        foreach (var x in ListPassedСells)
+        for (int i = 0; i < ListPassedСells.Count; i++)
         {
-            if (x.Exists(y => y == number))
-                return true;
+            for (int j = 0; j < ListPassedСells[i].Count; j++)
+                if (ListPassedСells[i][j] == number) { return true; }
         }
+
         return false;
     }
 
@@ -408,25 +399,24 @@ public class FillWordCreator : MonoBehaviour
     void CheckTupicalCell(int[,] mass)
     {
         deadEndCell.Clear();
-        foreach (var x in ListPassedСells)
-            foreach (var y in x)
+        for (int i = 0; i < ListPassedСells.Count; i++)
+        {
+            for (int j = 0; j < ListPassedСells[i].Count; j++)
             {
-                if (CountFreeNearestCell(y) == 1)
+                if (CountFreeNearestCell(ListPassedСells[i][j]) == 1)
                 {
-                    deadEndCell.Add(y);
+                    deadEndCell.Add(ListPassedСells[i][j]);
                 }
             }
+        }
     }
 
     bool CheckMinCountCellInZone(int min)
     {
-
-        foreach (var x in ListPassedСells)
+        for (int i = 0; i < ListPassedСells.Count; i++)
         {
-            if (x.Count < min)
+            if (ListPassedСells[i].Count < min)
             {
-               // Debug.Log(x.Count + " < " + min + " = false");
-               
                 return true;
             }
         }
@@ -436,20 +426,22 @@ public class FillWordCreator : MonoBehaviour
 
     public void AddNewWord()
     {
-       
-        //вставить функцию определения минимального слова в словаре
 
-        int min = DictionaryController.GetMin();
+        int min = GetMinByMinList();
+
         CheckEmptyCells(mass, min);
 
         if (ListPassedСells.Count == 0)
         {
             bildIsDone = true;
-           // Debug.Log("No free cell");
             return;
         }
 
-            CheckMinCountCellInZone(min);
+        if (CheckMinCountCellInZone(min))
+        {
+            ResetFillWord();
+            return;
+        }
         CheckTupicalCell(mass);
 
         int startCell = 0;
@@ -458,10 +450,8 @@ public class FillWordCreator : MonoBehaviour
         if (ListPassedСells.Count > 0)
         {
             if (deadEndCell.Count > 0)
-            {
-                startCell = deadEndCell[Random.Range(0,deadEndCell.Count)];
-                //Debug.Log("deadcell = " + startCell);
-
+            { 
+                startCell = deadEndCell[Random.Range(0, deadEndCell.Count)];
             }
             else
             {
@@ -470,7 +460,6 @@ public class FillWordCreator : MonoBehaviour
                     startCell = Random.Range(0, mass.GetLength(0) * mass.GetLength(1));
                     if (GetValueByNubber(startCell) == 0)
                     {
-                       // Debug.Log("random");
                         break;
                     }
                 }
@@ -481,39 +470,34 @@ public class FillWordCreator : MonoBehaviour
         int x = startCell;
         int[,] buffMas = new int[mass.GetLength(0), mass.GetLength(1)];
 
-   
+
         int numOfLetters = GetNumberLetersInWord(GetCountOfCellInZoneByNumberOfCell(startCell));
-       // Debug.Log("numOfLetters = " + numOfLetters);
+        // Debug.Log("numOfLetters = " + numOfLetters);
         SetValueByNumber(countOfAddedWord, x, ref mass);
 
-     
+       
+        
             ReturnToPreMass(mass, ref buffMas);
-            for (int i = 0; i < numOfLetters -1 ; i++)
+            for (int i = 0; i < numOfLetters - 1; i++)
             {
-                x = GetNextCell(mass, x);
+                x = GetNextCell(mass, x); 
                 if (x == -1)
                 {
-                    //Debug.Log("Error");
-                    ResetFillWord();
-                    break;
+                ResetFillWord();
+                break;
                 }
-                // Debug.Log("Set = " + x);
                 SetValueByNumber(countOfAddedWord, x, ref mass);
-          
-            }
-   
+            }                 
+
         if (CheckMinCountCellInZone(min))
-        {
-            //Debug.Log("Reset after added");
+        { 
             ResetFillWord();
             return;
         }
-        // ReturnToPreMass(mass, ref buffMas);
-       // ShowMassInDebugLog();
 
         countOfAddedWord++;
         SetColors(mass);
-        
+
     }
 
     void ReturnToPreMass(int[,] x, ref int[,] y)
@@ -526,11 +510,92 @@ public class FillWordCreator : MonoBehaviour
             }
         }
     }
+  
+    int GetNumberLetersInWord(int count)
+    {
+        int min = GetMinByMinList();
+        int max = DictionaryController.GetMax(); 
+
+        if (count >= min && count <= max)
+        {
+            return Random.Range(min, count);// count;
+        }
+        else if (count < min)
+        {
+            return 0;
+        }
+        else if (count > max)
+        {
+            if (count - max >= min)
+            {
+                if (countOfAddedWord == 1)
+                    return Random.Range(max - min, max);
+                return Random.Range(min, max);
+            }
+            else
+            {
+                return count - (min - (count - max));
+            }
+        }
+        Debug.Log("Not of all");
+        return 0;
+    }
+
+    int GetCountOfCellInZoneByNumberOfCell(int numCell)
+    {
+        int count = -1;
+        for (int i = 0; i < ListPassedСells.Count; i++)
+        {
+            for (int j = 0; j < ListPassedСells[i].Count; j++)
+            {
+                if (ListPassedСells[i][j] == numCell && ListPassedСells[i][j] != -1)
+                {
+                    count++;
+                }
+            }
+            
+        }
+        return ListPassedСells[count].Count;
+    }
+
+
+    int GetMinByMinList() 
+    {
+        MinList m = minList.FindAll(x => x.count > 0).First(x => x.call == minList.Min(y => y.call));
+        //minList = minList.Select(p => p.lengtn == m.lengtn && p.call == m.call
+        //         ? new MinList { lengtn = m.lengtn, call = m.call, count = --m.count }
+        //         : p)
+        //         .ToList();
+
+        return m.lengtn;
+    }
+    public void ShowMinByMinList()
+    {
+        string str = "";
+        foreach (var item in minList)
+        {
+            str += "Len = " + item.lengtn + " call = " + item.call + " count = " + item.count + "\n";
+        }
+        Debug.Log(str); 
+
+    }
+
+    void ShowMassInDebugLog()
+    {
+        string s2 = "";
+        for (int i = 0; i < mass.GetLength(0); i++)
+        {
+            for (int j = 0; j < mass.GetLength(1); j++)
+            {
+                s2 += mass[i, j].ToString() + " ";
+            }
+            s2 += "\n";
+        }
+        Debug.Log(s2);
+    }
 
     void SetColors(int[,] x)
     {
-
-
         for (int i = 0; i < x.GetLength(0); i++)
         {
             for (int j = 0; j < x.GetLength(1); j++)
@@ -566,90 +631,15 @@ public class FillWordCreator : MonoBehaviour
                         CellGrid.transform.GetChild(num).GetComponent<Image>().color = new Color(0.3f, 0.8f, 0.2f);
                         break;
                     case 9:
-                        CellGrid.transform.GetChild(num).GetComponent<Image>().color = new  Color(0.5f,0.9f,0.5f);
+                        CellGrid.transform.GetChild(num).GetComponent<Image>().color = new Color(0.5f, 0.9f, 0.5f);
                         break;
                     case 10:
                         CellGrid.transform.GetChild(num).GetComponent<Image>().color = new Color(0.2f, 0.4f, 0.8f);
                         break;
                 }
             }
-
         }
-
-    }
-
-    void ShowMassInDebugLog()
-    {
-        string s2 = "";
-        for (int i = 0; i < mass.GetLength(0); i++)
-        {
-            for (int j = 0; j < mass.GetLength(1); j++)
-            {
-                s2 += mass[i, j].ToString() + " ";
-            }
-            s2 += "\n";
-        }
-        Debug.Log(s2);
-    }
-
-    int GetNumberLetersInWord(int count)
-    {
-
-
-        int min = DictionaryController.GetMin();
-        int max = DictionaryController.GetMax();
-       // Debug.Log("count = " + count);
-        if (count >= min && count <= max)
-        {
-
-            //Debug.Log("count >= min && count <= max");
-            //Debug.Log(Random.Range(min, count));
-            return Random.Range(min, count);// count;
-        }
-        else if (count < min)
-        {
-            return 0;
-        }
-        else if (count > max)
-        {
-            if (count - max >= min)
-            {
-                if (countOfAddedWord == 1 )
-                    return Random.Range(max-min,max);
-                // Debug.Log("count - max >= min");
-                return Random.Range(min, max);
-            }
-            else
-            {
-                //Debug.Log("count - (min - (count - max))");
-                return count - (min - (count - max));
-            }
-        }
-        Debug.Log("Not of all");
-        return 0;
-    }
-    int GetCountOfCellInZoneByNumberOfCell(int numCell)
-    {
-        int count = -1;
-        foreach (var item in ListPassedСells)
-        {
-           // Debug.Log("item.Find(x => x == numCell) = " + item.Find(x => x == numCell));
-            if (item.Find(x => x == numCell) != -1)
-            {
-                count++;
-            }
-        }
-        //Debug.Log("count = " + count);
-        return ListPassedСells[count].Count;
     }
 
 
-    int GetMinByMinList()
-    {
-        minList = DictionaryController.GetMinList();
-        return 0;
-    }
-     
-  
-  
 }

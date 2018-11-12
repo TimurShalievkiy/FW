@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Linq;
 
 public class DictionaryController : MonoBehaviour
@@ -22,7 +23,7 @@ public class DictionaryController : MonoBehaviour
             this.lettersNumber = lettersNumber;
         }
     }
-    static List<Word> words;
+    static List<Word> words;  
     static List<PassedWord> pasedWords;
 
     public static Topic currentTopic = Topic.Animals;
@@ -34,7 +35,8 @@ public class DictionaryController : MonoBehaviour
         pasedWords = new List<PassedWord>();
         words = FillTheWordsOnTheCurrentTopic();
         LoadPasedDictionary();
-        Debug.Log( " count = "+ pasedWords.Count);
+        //text.GetComponent<Text>().text = pasedWords.Count.ToString();
+        //Debug.Log( " count = "+ pasedWords.Count);
     }
 
     public static int GetMin()
@@ -46,6 +48,8 @@ public class DictionaryController : MonoBehaviour
         //    str += "len = " + item.numberOfLetters + " call = " + item.callNumber + "\n";
         //}
         //Debug.Log(str);
+
+
         return words.Min(x => x.numberOfLetters); ;
     }
 
@@ -153,13 +157,6 @@ public class DictionaryController : MonoBehaviour
     }
 
 
-    //static List<Word> GetListWithMinimumOfCalls()
-    //{
-    //    List<Word> resultList = new List<Word>();
-
-    //    return resultList;
-    //}
-
     static void SavePasedDictionary()
     {
         string str = "";
@@ -181,8 +178,6 @@ public class DictionaryController : MonoBehaviour
             }
             PlayerPrefs.SetString(currentTopic.ToString(), str);
             PlayerPrefs.Save();
-            //pasedWords = new List<PassedWord>();
-
         }
     }
 
@@ -192,15 +187,12 @@ public class DictionaryController : MonoBehaviour
         if (PlayerPrefs.HasKey(currentTopic.ToString()))
         {
             string str = PlayerPrefs.GetString(currentTopic.ToString());
-            //Debug.Log("load str = " + str);
             string[] massSplit = str.Split(' ');
             pasedWords = new List<PassedWord>();
             for (int i = 0; i < massSplit.Length - 2; i += 3)
             {
                 pasedWords.Add(new PassedWord(System.Convert.ToInt32(massSplit[i]), System.Convert.ToInt32(massSplit[i + 1]), System.Convert.ToInt32(massSplit[i + 2])));
-                // Debug.Log("i = " + massSplit[i] + " i+1 =" + massSplit[i+1]);
             }
-
         }
         else {
             SavePasedDictionary();
@@ -253,7 +245,10 @@ public class DictionaryController : MonoBehaviour
     public static List<FillWordCreator.MinList> GetMinList()
     {
         List<FillWordCreator.MinList> minList = new List<FillWordCreator.MinList>();
-
+        if (pasedWords == null || pasedWords.Count == 0)
+        {
+            LoadPasedDictionary();
+        }
         List<List<PassedWord>> lint = new List<List<PassedWord>>();
         int min = pasedWords.Min(x => x.lettersNumber);
         int max = pasedWords.Max(x => x.lettersNumber);
@@ -265,27 +260,18 @@ public class DictionaryController : MonoBehaviour
 
         int minCall = pasedWords.Min(x => x.callNumber);
         int maxCall = pasedWords.Max(x => x.callNumber);
-        //string str = "";
+
         for (int i = 0; i < lint.Count; i++)
-        {
-            //str += "CountLetter = " + lint[i].Count + "\n";
-            //for (int j = 0; j < lint[i].Count; j++)
-            //{
-               
+        {              
                 for (int k = minCall; k <= maxCall; k++)
                 {
                     int count = lint[i].FindAll(x => x.callNumber == k).Count();
                     if (count == 0)
-                        break;
+                        continue;
                 minList.Add(new FillWordCreator.MinList(lint[i][0].lettersNumber, k, count));
-                  // Debug.Log("lengt = " + lint[i][0].lettersNumber + " where call =  " + k +" = " + count);
                 }
-            //} 
         }
 
-
-       
-        //Debug.Log(str);
         return minList;
     }
 
