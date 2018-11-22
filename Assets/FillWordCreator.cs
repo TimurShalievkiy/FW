@@ -138,7 +138,9 @@ public class FillWordCreator : MonoBehaviour
         if (CheckMinCountCellInZone(min)) 
         {
             //Debug.Log("CheckMinCountCellInZone(min) ---- 1");
-           // ShowMassInDebugLog();  
+            // ShowMassInDebugLog();  
+            ResetWordsInMinZone(min);
+            Debug.Log("===========================");
             ResetFillWord();
             return;
         }
@@ -698,7 +700,7 @@ public class FillWordCreator : MonoBehaviour
     }
 
 
-    void CheckNearestCellForEndTheWord(int number)
+    int  CheckNearestCellForEndTheWord(int number)
     {
         int i = number / mass.GetLength(1);
         int j = number - i * mass.GetLength(1);
@@ -707,7 +709,13 @@ public class FillWordCreator : MonoBehaviour
         if (i - 1 >= 0)
         {
             int up = GetNumberByPosInArray(i - 1, j);
-            
+            for (int k = 0; k < GameProcess.cellNumbers.Count; k++)
+            {
+                if (GameProcess.cellNumbers[k][0] == up || GameProcess.cellNumbers[k][GameProcess.cellNumbers[k].Count - 1] == up)
+                {
+                    return up;
+                }  
+            } 
         }
         //проверка нижней ячейки на пустоту и запись
         if (i + 1 < mass.GetLength(0))
@@ -715,12 +723,12 @@ public class FillWordCreator : MonoBehaviour
             //int down = (mass.GetLength(0) * (i + 1)) + j;
             int down = GetNumberByPosInArray(i + 1, j);
 
-            if (GetValueByNubber(down) == 0 && !FindCellInList(down))
+            for (int k = 0; k < GameProcess.cellNumbers.Count; k++)
             {
-
-                ListPassedСells[rankOfListPassedCell].Add(down);
-                CheckNearest(down);
-                //Debug.Log("Added in CheckNearest " + down);
+                if (GameProcess.cellNumbers[k][0] == down || GameProcess.cellNumbers[k][GameProcess.cellNumbers[k].Count - 1] == down)
+                {
+                    return down;
+                }  
             }
         }
         //проверка левой ячейки на пустоту и запись
@@ -729,11 +737,13 @@ public class FillWordCreator : MonoBehaviour
             // int left = (mass.GetLength(0) * i) + j - 1;
             int left = GetNumberByPosInArray(i, j - 1);
 
-            if (GetValueByNubber(left) == 0 && !FindCellInList(left))
+            for (int k = 0; k < GameProcess.cellNumbers.Count; k++)
             {
-                ListPassedСells[rankOfListPassedCell].Add(left);
-                CheckNearest(left);
-                //Debug.Log("Added in CheckNearest " + left);
+                if (GameProcess.cellNumbers[k][0] == left || GameProcess.cellNumbers[k][GameProcess.cellNumbers[k].Count - 1] == left)
+                {
+                    return left;
+                }
+                 
             }
         }
 
@@ -741,12 +751,52 @@ public class FillWordCreator : MonoBehaviour
         {
             int right = GetNumberByPosInArray(i, j + 1);
 
-            if (GetValueByNubber(right) == 0 && !FindCellInList(right))
+            for (int k = 0; k < GameProcess.cellNumbers.Count; k++)
             {
-
+                if (GameProcess.cellNumbers[k][0] == right || GameProcess.cellNumbers[k][GameProcess.cellNumbers[k].Count - 1] == right)
+                {
+                    return right;
+                }   
             }
         }
+
+        return -1;
     }
 
+    void ResetWordsInMinZone(int min)
+    {
+        int res = -1;
+        List<int> buff = new List<int>();
+        for (int i = 0; i < ListPassedСells.Count; i++)
+        {
+            if (ListPassedСells[i].Count < min)
+            {
+               
+                for (int j = 0; j < ListPassedСells[i].Count; j++)
+                {
+                    buff.Add(ListPassedСells[i][j]);                  
+                }
+            }
+        }
+
+
+        for (int i = 0; i < buff.Count; i++)
+        {
+            res = CheckNearestCellForEndTheWord(buff[i]);
+
+            if (CountFreeNearestCell(buff[i]) == 1 && res !=-1)
+            {
+                Debug.Log("REPLACE WORD");
+                ReplaceWord(buff[i], res);
+            }
+        }
+       // res = CheckNearestCellForEndTheWord(ListPassedСells[i][j]);
+
+    }
+
+    void ReplaceWord(int freeMinZoneCell, int endOfWord)
+    {
+
+    }
 
 }
