@@ -22,10 +22,11 @@ public class GameProcess : MonoBehaviour
 
     public void SetGameGread()   
     {
-        
+        //creator.ShowMinByMinList();
         creator.ResetFillWord();
-       // FillTheCellsWithLetters(); 
-
+        ShowCellNumbers();
+        FillTheCellsWithLetters();  
+        //creator.ShowMinByMinList();
         Debug.Log(FillWordCreator.countOfResets);
         FillWordCreator.countOfResets = 0;
 
@@ -51,12 +52,14 @@ public class GameProcess : MonoBehaviour
         string str = "";
         for (int i = 0; i < cellNumbers.Count; i++)
         {
-            str = DictionaryController.GetordByTheNumberOfLetters(cellNumbers[i].Count, usedWords);
+            str = DictionaryController.GetWordByTheNumberOfLetters(cellNumbers[i].Count, usedWords);
             if (str == null)
             {
+                Debug.Log("Restart");
                 SetGameGread();
                 return;
             }
+
             usedWords.Add(str);
 
             int index = 0;
@@ -68,25 +71,6 @@ public class GameProcess : MonoBehaviour
             }
         }
 
-        //=========================================
-        //foreach (var x in cellNumbers)
-        //{
-   
-        //    str =  DictionaryController.GetordByTheNumberOfLetters(x.Count, usedWords);
-        //    if (str == null)
-        //    {
-        //        SetGameGread();
-        //        return;
-        //    }
-        //    usedWords.Add(str);
-             
-        //    int index = 0;
-        //    foreach (var y in x)
-        //    {
-        //        CellGrid.transform.GetChild(y).transform.GetChild(0).GetComponent<Text>().text = str[index].ToString().ToUpper();
-        //        index++;
-        //    }
 
-        //}
     }
 }

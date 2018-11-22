@@ -11,7 +11,8 @@ public class DictionaryController : MonoBehaviour
 
     public enum Topic { Random = 0, Animals = 1 }
 
-    public struct PassedWord {
+    public struct PassedWord
+    {
         public int id;
         public int callNumber;
         public int lettersNumber;
@@ -23,7 +24,7 @@ public class DictionaryController : MonoBehaviour
             this.lettersNumber = lettersNumber;
         }
     }
-    static List<Word> words;  
+    static List<Word> words;
     static List<PassedWord> pasedWords;
 
     public static Topic currentTopic = Topic.Animals;
@@ -41,15 +42,6 @@ public class DictionaryController : MonoBehaviour
 
     public static int GetMin()
     {
-        
-        //string str = "";
-        //foreach (var item in w)
-        //{
-        //    str += "len = " + item.numberOfLetters + " call = " + item.callNumber + "\n";
-        //}
-        //Debug.Log(str);
-
-
         return words.Min(x => x.numberOfLetters); ;
     }
 
@@ -71,91 +63,33 @@ public class DictionaryController : MonoBehaviour
         return null;
     }
 
-    public static string GetordByTheNumberOfLetters(int num, List<string> usedWords)
+    //-----------------------------------------------------------------
+    public static string GetWordByTheNumberOfLetters(int num, List<string> usedWords)
     {
+        int min = pasedWords.FindAll(x => x.lettersNumber == num).Min(x => x.callNumber);
+        List<PassedWord> p = pasedWords.FindAll(x => x.lettersNumber == num).FindAll(x => x.callNumber == min);
+        int id = p[Random.Range(0, p.Count)].id;
         List<Word> buff = new List<Word>();
-        int rand = 0;
-        int counter = 0;
-        do
-        {
-            buff = words.FindAll(x => x.numberOfLetters == num);
-            LoadPasedDictionary();
-            int min = 99999;
-            rand = 0;
 
-            if (pasedWords.Count > 0)
+        
+        for (int i = 0; i < pasedWords.Count; i++)
         {
-                for (int j = 0; j < pasedWords.Count; j++)
-                {
-                    buff.RemoveAll(x => x.id == pasedWords[j].id);                   
-                }
-                
-            
-            
-            if (buff.Count > 0)
-            {               
-                rand = Random.Range(0, buff.Count); 
-                pasedWords.Add(new PassedWord(buff[rand].id, ++buff[rand].callNumber, buff[rand].numberOfLetters));
-            }
-            else
+            if (pasedWords[i].id == id)
             {
-                buff = words.FindAll(x => x.numberOfLetters == num);
+                int newCallNum = pasedWords[i].callNumber + 1;
+                pasedWords[i] = new PassedWord(pasedWords[i].id, newCallNum, pasedWords[i].lettersNumber);
+            }
+        }
 
-                for (int i = 0; i < buff.Count; i++)
-                {
-                    for (int j = 0; j < pasedWords.Count; j++)
-                    {
-                        if (buff[i].id == pasedWords[j].id)
-                        {
-                            buff[i].callNumber = pasedWords[j].callNumber; 
-                            if (min > pasedWords[j].callNumber)
-                                min = pasedWords[j].callNumber;
-                        }
-                    }                       
-                }
-                buff = buff.FindAll(x => x.callNumber == min);                 
-                rand = Random.Range(0, buff.Count); 
-                for (int i = 0; i < pasedWords.Count; i++)
-                {
-                    if (pasedWords[i].id == buff[rand].id)
-                    {
-                        int y = pasedWords[i].callNumber;
-                        pasedWords[i] = new PassedWord(pasedWords[i].id, ++y, pasedWords[i].lettersNumber);
-                        break;
-                    }
-                }
-            }
-            
-            //SavePasedDictionary();
-            //return buff[rand].word;
-        }
-        else {
-            rand = Random.Range(0, buff.Count);
-            pasedWords.Add(new PassedWord(buff[rand].id, 1,buff[rand].numberOfLetters));
-            //SavePasedDictionary();
-            //return buff[rand].word; 
-        }
-            counter++;
-            if (counter > 10)
-            {
-                //Debug.Log("break"); 
-                break;
-            }
-         
-        } while (!usedWords.Exists(x=>x == buff[rand].word));
-        if (usedWords.Exists(x => x == buff[rand].word))
-        {
-            return null;
-        }
+
         SavePasedDictionary();
-        return buff[rand].word;
+        return words.Find(x => x.id == id).word;
 
     }
     public void ClearPlayerPrefs()
     {
         PlayerPrefs.DeleteAll();
     }
-
 
     static void SavePasedDictionary()
     {
@@ -181,7 +115,7 @@ public class DictionaryController : MonoBehaviour
         }
     }
 
-   static void LoadPasedDictionary()
+    static void LoadPasedDictionary()
     {
         //Debug.Log(currentTopic.ToString());
         if (PlayerPrefs.HasKey(currentTopic.ToString()))
@@ -194,14 +128,15 @@ public class DictionaryController : MonoBehaviour
                 pasedWords.Add(new PassedWord(System.Convert.ToInt32(massSplit[i]), System.Convert.ToInt32(massSplit[i + 1]), System.Convert.ToInt32(massSplit[i + 2])));
             }
         }
-        else {
+        else
+        {
             SavePasedDictionary();
             LoadPasedDictionary();
         }
 
     }
 
-   public  static void ShowInDebugPassedCell()
+    public static void ShowInDebugPassedCell()
     {
         string str = "";
         foreach (var item in pasedWords)
@@ -210,6 +145,7 @@ public class DictionaryController : MonoBehaviour
         }
         Debug.Log(str);
     }
+
     static void SetWordCallNumber()
     {
         words = words.OrderBy(x => x.id).ToList();
@@ -224,11 +160,11 @@ public class DictionaryController : MonoBehaviour
 
     public void ShowCountNumAndCall()
     {
-        
+
         List<int> lint = new List<int>();
         int max = pasedWords.Max(x => x.callNumber);
 
-      
+
         for (int i = 0; i <= max; i++)
         {
             lint.Add(pasedWords.Count(x => x.callNumber == i));
@@ -237,7 +173,7 @@ public class DictionaryController : MonoBehaviour
         string str = "";
         for (int i = 0; i <= max; i++)
         {
-            str += i +  " - " + lint[i] + "\n";
+            str += i + " - " + lint[i] + "\n";
         }
         Debug.Log(str);
     }
@@ -262,19 +198,94 @@ public class DictionaryController : MonoBehaviour
         int maxCall = pasedWords.Max(x => x.callNumber);
 
         for (int i = 0; i < lint.Count; i++)
-        {              
-                for (int k = minCall; k <= maxCall; k++)
-                {
-                    int count = lint[i].FindAll(x => x.callNumber == k).Count();
-                    if (count == 0)
-                        continue;
+        {
+            for (int k = minCall; k <= maxCall; k++)
+            {
+                int count = lint[i].FindAll(x => x.callNumber == k).Count();
+                if (count == 0)
+                    continue;
                 minList.Add(new FillWordCreator.MinList(lint[i][0].lettersNumber, k, count));
-                }
+            }
         }
 
         return minList;
     }
 
-
-
 }
+
+
+//int rand = 0;
+//int counter = 0;
+//do
+//{
+//    buff = words.FindAll(x => x.numberOfLetters == num);
+//    LoadPasedDictionary();
+//    int min = 99999;
+//    rand = 0;
+
+//    if (pasedWords.Count > 0)
+//{
+//        for (int j = 0; j < pasedWords.Count; j++)
+//        {
+//            buff.RemoveAll(x => x.id == pasedWords[j].id);                   
+//        }
+
+
+
+//    if (buff.Count > 0)
+//    {               
+//        rand = Random.Range(0, buff.Count); 
+//        pasedWords.Add(new PassedWord(buff[rand].id, ++buff[rand].callNumber, buff[rand].numberOfLetters));
+//    }
+//    else
+//    {
+//        buff = words.FindAll(x => x.numberOfLetters == num);
+
+//        for (int i = 0; i < buff.Count; i++)
+//        {
+//            for (int j = 0; j < pasedWords.Count; j++)
+//            {
+//                if (buff[i].id == pasedWords[j].id)
+//                {
+//                    buff[i].callNumber = pasedWords[j].callNumber; 
+//                    if (min > pasedWords[j].callNumber)
+//                        min = pasedWords[j].callNumber;
+//                }
+//            }                       
+//        }
+//        buff = buff.FindAll(x => x.callNumber == min);                 
+//        rand = Random.Range(0, buff.Count); 
+//        for (int i = 0; i < pasedWords.Count; i++)
+//        {
+//            if (pasedWords[i].id == buff[rand].id)
+//            {
+//                int y = pasedWords[i].callNumber;
+//                pasedWords[i] = new PassedWord(pasedWords[i].id, ++y, pasedWords[i].lettersNumber);
+//                break;
+//            }
+//        }
+//    }
+
+//    //SavePasedDictionary();
+//    //return buff[rand].word;
+//}
+//else {
+//    rand = Random.Range(0, buff.Count);
+//    pasedWords.Add(new PassedWord(buff[rand].id, 1,buff[rand].numberOfLetters));
+//    //SavePasedDictionary();
+//    //return buff[rand].word; 
+//}
+//    counter++;
+//    if (counter > 10)
+//    {
+//        //Debug.Log("break"); 
+//        break;
+//    }
+//    Debug.Log("1");
+//} while (!usedWords.Exists(x=>x == buff[rand].word));
+
+//if (usedWords.Exists(x => x == buff[rand].word))
+//{
+//    return null;
+//}
+//SavePasedDictionary();

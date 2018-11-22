@@ -9,10 +9,9 @@ public class FillWordCreator : MonoBehaviour
 
     public GameObject CellGrid; //
 
-
     List<List<int>> ListPassedСells; // пройденые пустые ячейки с разделением на зоны
     List<int> deadEndCell; //тупиковые ячейки с которых удобнее всего начинать слова
-    List<string> ListWordsForFillword;
+    //List<string> ListWordsForFillword;
 
     int[,] mass;
 
@@ -23,7 +22,7 @@ public class FillWordCreator : MonoBehaviour
     public int columns = 5;
     public int rows = 6;
 
-    int countOfAddedWord = 1;
+    int countOfAddedWord = 1;// номер добавляемого слова
 
     bool bildIsDone = false;
 
@@ -44,7 +43,11 @@ public class FillWordCreator : MonoBehaviour
         }
     }
 
-    public static List<MinList> minList;
+    public static List<MinList> minList;//получение списка доступных слов для заполнения
+
+
+
+
     // Use this for initialization
     void Start()
     {
@@ -55,10 +58,8 @@ public class FillWordCreator : MonoBehaviour
 
     public void ResetFillWord()
     {
- 
         bildIsDone = false;
 
-       // Debug.Log("reset--------------------------------");
         countOfResets++;
         mass = new int[columns, rows];
         ListPassedСells = new List<List<int>>();
@@ -74,63 +75,143 @@ public class FillWordCreator : MonoBehaviour
         countOfAddedWord = 1;
         SetCellNumbers();
 
-        FillingFirstWord(mass);
+        // FillingFirstWord(mass);
+ 
+           // ShowMinByMinList();
 
         countOfAddedWord++;
-
 
         while (!bildIsDone)
         {
             AddNewWord();
         }
-        // ShowMassInDebugLog();
-        //GameProcess.ShowCellNumbers(); 
+       // if(bildIsDone)
+       // ShowMinByMinList();
     }
 
-    void SetCellNumbers()
+
+
+    //void FillingFirstWord(int[,] mass)
+    //{
+    //    int startCell = Random.Range(0, mass.GetLength(0) * mass.GetLength(1));
+
+    //    SetValueByNumber(countOfAddedWord, startCell, ref mass);
+
+    //    CellGrid.transform.GetChild(startCell).GetComponent<Image>().color = Color.blue;
+
+    //    int x = startCell;
+
+    //    ListPassedСells.Clear();
+    //    CheckEmptyCells(mass, GetMinByMinList());
+
+    //    int numberOfLetters = GetNumberLetersInWord(ListPassedСells[0].Count);
+
+    //    for (int i = 0; i < numberOfLetters - 1; i++)
+    //    {
+    //        x = GetNextCell(mass, x);
+    //        if (x == -1)
+    //        {
+    //            ResetFillWord();
+    //            break;
+    //        }
+
+    //        SetValueByNumber(1, x, ref mass);
+
+    //    }
+    //    SetColors(mass);
+    //}
+    //задать значение в массив по номеру ячейки
+
+    public void AddNewWord()
     {
-        int index = 0;
-        for (int i = 0; i < mass.GetLength(0); i++)
+
+        int min = GetMinByMinList();
+
+        CheckEmptyCells(mass, min);
+
+        if (ListPassedСells.Count == 0)
         {
-            for (int j = 0; j < mass.GetLength(1); j++)
+            bildIsDone = true;
+            return;
+        }
+
+        if (CheckMinCountCellInZone(min)) 
+        {
+            //Debug.Log("CheckMinCountCellInZone(min) ---- 1");
+           // ShowMassInDebugLog();  
+            ResetFillWord();
+            return;
+        }
+        CheckTupicalCell(mass);
+
+        int startCell = 0;
+
+        //-------------------получение стартовой ячейки-----------------------------
+        if (ListPassedСells.Count > 0)
+        {
+            if (deadEndCell.Count > 0)
             {
-                CellGrid.transform.GetChild(index).GetComponent<Image>().color = Color.white;
-                CellGrid.transform.GetChild(index).transform.GetChild(0).GetComponent<Text>().text = index.ToString();
-                index++;
+                startCell = deadEndCell[Random.Range(0, deadEndCell.Count)];
+            }
+            else
+            {
+                int i = Random.Range(0, ListPassedСells.Count);
+                int count = ListPassedСells[i].Count;
+                startCell = ListPassedСells[i][Random.Range(0, count)];
+
             }
         }
-    }
-
-    void FillingFirstWord(int[,] mass)
-    {
-        int startCell = Random.Range(0, mass.GetLength(0) * mass.GetLength(1));
-
-        SetValueByNumber(countOfAddedWord, startCell, ref mass);
-
-        CellGrid.transform.GetChild(startCell).GetComponent<Image>().color = Color.blue;
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
         int x = startCell;
+        int[,] buffMas = new int[mass.GetLength(0), mass.GetLength(1)];
 
-        ListPassedСells.Clear();
-        CheckEmptyCells(mass, GetMinByMinList());
 
-        int numberOfLetters = GetNumberLetersInWord(ListPassedСells[0].Count);
+        int numOfLetters = GetNumberLetersInWord(GetCountOfCellInZoneByNumberOfCell(startCell));
+        // Debug.Log("numOfLetters = " + numOfLetters);
+        SetValueByNumber(countOfAddedWord, x, ref mass);
 
-        for (int i = 0; i < numberOfLetters - 1; i++)
+
+
+        ReturnToPreMass(mass, ref buffMas);
+        for (int i = 0; i < numOfLetters - 1; i++)
         {
             x = GetNextCell(mass, x);
             if (x == -1)
             {
+               // Debug.Log("GetNextCell    x == -1");
+                
                 ResetFillWord();
                 break;
             }
-
-            SetValueByNumber(1, x, ref mass);
-
+            SetValueByNumber(countOfAddedWord, x, ref mass);
         }
+        DecrementCountInMinList(numOfLetters);
+        if (CheckMinCountCellInZone(min))
+        {
+            //Debug.Log("CheckMinCountCellInZone(min) ---- 2");
+            ResetFillWord();
+            return;
+        }
+
+        countOfAddedWord++;
         SetColors(mass);
+
     }
 
+    //перписать значения с одного массива во второй
+    void ReturnToPreMass(int[,] x, ref int[,] y)
+    {
+        for (int i = 0; i < x.GetLength(0); i++)
+        {
+            for (int j = 0; j < x.GetLength(1); j++)
+            {
+                y[i, j] = x[i, j];
+            }
+        }
+    }
+
+    //задать ячейке значение по номеру
     void SetValueByNumber(int value, int number, ref int[,] mass)
     {
         int i = number / mass.GetLength(1);
@@ -153,10 +234,20 @@ public class FillWordCreator : MonoBehaviour
                 GameProcess.cellNumbers[GameProcess.cellNumbers.Count - 1].Add(GetNumberByPosInArray(i, j));
             }
         }
+    }
 
-
-        //CellGrid.transform.GetChild(number).GetComponent<Image>().color = Color.blue;
-        //CellGrid.transform.GetChild(number).transform.GetChild(0).GetComponent<Text>().
+    void SetCellNumbers()
+    {
+        int index = 0;
+        for (int i = 0; i < mass.GetLength(0); i++)
+        {
+            for (int j = 0; j < mass.GetLength(1); j++)
+            {
+                CellGrid.transform.GetChild(index).GetComponent<Image>().color = Color.white;
+                CellGrid.transform.GetChild(index).transform.GetChild(0).GetComponent<Text>().text = index.ToString();
+                index++;
+            }
+        }
     }
 
     int GetNextCell(int[,] mass, int numberCurrentCell)
@@ -173,9 +264,12 @@ public class FillWordCreator : MonoBehaviour
         {
             int up = GetNumberByPosInArray(i - 1, j);
 
+           
             //Debug.Log("Current = " + numberCurrentCell + " Up cell = " + up);
             if (GetValueByNubber(up) == 0)
             {
+                if (CountFreeNearestCell(up) == 1)
+                    return up;
                 // Debug.Log("Up cell Free ");
                 dir[index] = up;
                 index++;
@@ -185,9 +279,14 @@ public class FillWordCreator : MonoBehaviour
         if (i + 1 < mass.GetLength(0))
         {
             int down = GetNumberByPosInArray(i + 1, j);
+
+
+
             if (GetValueByNubber(down) == 0)
             {
                 //Debug.Log("down cell Free ");
+                if (CountFreeNearestCell(down) == 1)
+                    return down;
                 dir[index] = down;
                 index++;
             }
@@ -197,9 +296,14 @@ public class FillWordCreator : MonoBehaviour
         {
             //int left = (mass.GetLength(0) * i) + j - 1;
             int left = GetNumberByPosInArray(i, j - 1);
+
+
+
             if (GetValueByNubber(left) == 0)
             {
                 //Debug.Log("left cell Free ");
+                if (CountFreeNearestCell(left) == 1)
+                    return left;
                 dir[index] = left;
                 index++;
             }
@@ -209,9 +313,14 @@ public class FillWordCreator : MonoBehaviour
         {
             //int right = (mass.GetLength(0) * i) + j + 1;
             int right = GetNumberByPosInArray(i, j + 1);
+
+
+
             if (GetValueByNubber(right) == 0)
             {
                 //Debug.Log("right cell Free ");
+                if (CountFreeNearestCell(right) == 1)
+                    return right;
                 dir[index] = right;
                 index++;
             }
@@ -224,6 +333,7 @@ public class FillWordCreator : MonoBehaviour
         return dir[index2];
     }
 
+    //получить значени по номеру ячейки с массива
     int GetValueByNubber(int number)
     {
         int i = number / mass.GetLength(1);
@@ -233,6 +343,7 @@ public class FillWordCreator : MonoBehaviour
         return mass[i, j];
     }
 
+    //получить номер ячейки по индексу в массиве
     int GetNumberByPosInArray(int i, int j)
     {
         //Debug.Log("i = " + i + " j = " + j);
@@ -273,6 +384,7 @@ public class FillWordCreator : MonoBehaviour
         return true;
     }
 
+    // проверка наличия номера ячейки в списке пройденных
     bool FindCellInList(int number)
     {
         if (ListPassedСells.Count == 0)
@@ -287,6 +399,7 @@ public class FillWordCreator : MonoBehaviour
         return false;
     }
 
+    //формирование списка зон с номерами ячеек
     void CheckNearest(int number)
     {
         int i = number / mass.GetLength(1);
@@ -346,6 +459,7 @@ public class FillWordCreator : MonoBehaviour
         }
     }
 
+    //получить количество ближайших пустых ячеек
     int CountFreeNearestCell(int number)
     {
         int i = number / mass.GetLength(1);
@@ -396,6 +510,7 @@ public class FillWordCreator : MonoBehaviour
         return count;
     }
 
+    // заполнение списка тупиковых ячеек
     void CheckTupicalCell(int[,] mass)
     {
         deadEndCell.Clear();
@@ -411,6 +526,7 @@ public class FillWordCreator : MonoBehaviour
         }
     }
 
+    //проверка зон на вместимость минимальной длины слова
     bool CheckMinCountCellInZone(int min)
     {
         for (int i = 0; i < ListPassedСells.Count; i++)
@@ -424,97 +540,12 @@ public class FillWordCreator : MonoBehaviour
         return false;
     }
 
-    public void AddNewWord()
-    {
-
-        int min = GetMinByMinList();
-
-        CheckEmptyCells(mass, min);
-
-        if (ListPassedСells.Count == 0)
-        {
-            bildIsDone = true;
-            return;
-        }
-
-        if (CheckMinCountCellInZone(min))
-        {
-            ResetFillWord();
-            return;
-        }
-        CheckTupicalCell(mass);
-
-        int startCell = 0;
-
-        //-------------------получение стартовой ячейки-----------------------------
-        if (ListPassedСells.Count > 0)
-        {
-            if (deadEndCell.Count > 0)
-            { 
-                startCell = deadEndCell[Random.Range(0, deadEndCell.Count)];
-            }
-            else
-            {
-                while (true)
-                {
-                    startCell = Random.Range(0, mass.GetLength(0) * mass.GetLength(1));
-                    if (GetValueByNubber(startCell) == 0)
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-        int x = startCell;
-        int[,] buffMas = new int[mass.GetLength(0), mass.GetLength(1)];
-
-
-        int numOfLetters = GetNumberLetersInWord(GetCountOfCellInZoneByNumberOfCell(startCell));
-        // Debug.Log("numOfLetters = " + numOfLetters);
-        SetValueByNumber(countOfAddedWord, x, ref mass);
-
-       
-        
-            ReturnToPreMass(mass, ref buffMas);
-            for (int i = 0; i < numOfLetters - 1; i++)
-            {
-                x = GetNextCell(mass, x); 
-                if (x == -1)
-                {
-                ResetFillWord();
-                break;
-                }
-                SetValueByNumber(countOfAddedWord, x, ref mass);
-            }                 
-
-        if (CheckMinCountCellInZone(min))
-        { 
-            ResetFillWord();
-            return;
-        }
-
-        countOfAddedWord++;
-        SetColors(mass);
-
-    }
-
-    void ReturnToPreMass(int[,] x, ref int[,] y)
-    {
-        for (int i = 0; i < x.GetLength(0); i++)
-        {
-            for (int j = 0; j < x.GetLength(1); j++)
-            {
-                y[i, j] = x[i, j];
-            }
-        }
-    }
-  
+    //получить количество букв в слове по количеству свободных ячеек в зоне
     int GetNumberLetersInWord(int count)
     {
         int min = GetMinByMinList();
-        int max = DictionaryController.GetMax(); 
+        int max = GetMaxByMinList();
+        //int max = DictionaryController.GetMax();
 
         if (count >= min && count <= max)
         {
@@ -541,6 +572,7 @@ public class FillWordCreator : MonoBehaviour
         return 0;
     }
 
+    //получить количество пустых ячеек в зоне по ноmеру ячейки
     int GetCountOfCellInZoneByNumberOfCell(int numCell)
     {
         int count = -1;
@@ -553,30 +585,54 @@ public class FillWordCreator : MonoBehaviour
                     count++;
                 }
             }
-            
+
         }
         return ListPassedСells[count].Count;
     }
 
-
-    int GetMinByMinList() 
+    // получить значение миниmума со списка доступных слов
+    int GetMinByMinList()
     {
         MinList m = minList.FindAll(x => x.count > 0).First(x => x.call == minList.Min(y => y.call));
-        //minList = minList.Select(p => p.lengtn == m.lengtn && p.call == m.call
-        //         ? new MinList { lengtn = m.lengtn, call = m.call, count = --m.count }
-        //         : p)
-        //         .ToList();
-
         return m.lengtn;
     }
-    public void ShowMinByMinList()
+    int GetMaxByMinList()
+    {
+        int max = minList.Max(y => y.lengtn);
+        MinList m = new MinList(0, 0, 0);
+        while (true)
+        {
+            m = minList.FindAll(x => x.count > 0).FindAll(x => x.lengtn == max).First(x => x.call == minList.Min(y => y.call));
+            if (m.count == 0)
+            {
+                max--;
+            }
+            break;
+        }
+        //MinList m = minList.FindAll(x => x.count > 0).FindAll(x => x.lengtn == minList.Max(y => y.lengtn)).First(x => x.call == minList.Min(y => y.call));
+        return m.lengtn;
+    }
+    void DecrementCountInMinList(int length)
+    {
+        for (int i = 0; i < minList.Count; i++)
+        {
+            if (minList[i].lengtn == length)
+            {
+                minList[i] = new MinList(minList[i].lengtn, minList[i].call, minList[i].count-1);
+            }
+        }
+       // minList.Find(x => x.lengtn == length).count--;
+    }
+
+    // получить значение мини ума со списка доступных слов
+    public  void ShowMinByMinList()
     {
         string str = "";
         foreach (var item in minList)
         {
             str += "Len = " + item.lengtn + " call = " + item.call + " count = " + item.count + "\n";
         }
-        Debug.Log(str); 
+        Debug.Log(str);
 
     }
 
@@ -637,6 +693,57 @@ public class FillWordCreator : MonoBehaviour
                         CellGrid.transform.GetChild(num).GetComponent<Image>().color = new Color(0.2f, 0.4f, 0.8f);
                         break;
                 }
+            }
+        }
+    }
+
+
+    void CheckNearestCellForEndTheWord(int number)
+    {
+        int i = number / mass.GetLength(1);
+        int j = number - i * mass.GetLength(1);
+
+
+        if (i - 1 >= 0)
+        {
+            int up = GetNumberByPosInArray(i - 1, j);
+            
+        }
+        //проверка нижней ячейки на пустоту и запись
+        if (i + 1 < mass.GetLength(0))
+        {
+            //int down = (mass.GetLength(0) * (i + 1)) + j;
+            int down = GetNumberByPosInArray(i + 1, j);
+
+            if (GetValueByNubber(down) == 0 && !FindCellInList(down))
+            {
+
+                ListPassedСells[rankOfListPassedCell].Add(down);
+                CheckNearest(down);
+                //Debug.Log("Added in CheckNearest " + down);
+            }
+        }
+        //проверка левой ячейки на пустоту и запись
+        if (j - 1 >= 0)
+        {
+            // int left = (mass.GetLength(0) * i) + j - 1;
+            int left = GetNumberByPosInArray(i, j - 1);
+
+            if (GetValueByNubber(left) == 0 && !FindCellInList(left))
+            {
+                ListPassedСells[rankOfListPassedCell].Add(left);
+                CheckNearest(left);
+                //Debug.Log("Added in CheckNearest " + left);
+            }
+        }
+
+        if (j + 1 < mass.GetLength(1))
+        {
+            int right = GetNumberByPosInArray(i, j + 1);
+
+            if (GetValueByNubber(right) == 0 && !FindCellInList(right))
+            {
+
             }
         }
     }
