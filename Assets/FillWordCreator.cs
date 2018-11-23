@@ -22,7 +22,7 @@ public class FillWordCreator : MonoBehaviour
     public int columns = 5;
     public int rows = 6;
 
-    int countOfAddedWord = 1;// номер добавляемого слова
+    int countOfAddedWord = 0;// номер добавляемого слова
 
     bool bildIsDone = false;
 
@@ -72,12 +72,12 @@ public class FillWordCreator : MonoBehaviour
         int min = GetMinByMinList();
 
         rankOfListPassedCell = 0;
-        countOfAddedWord = 1;
+        countOfAddedWord = 0;
         SetCellNumbers();
 
         // FillingFirstWord(mass);
- 
-           // ShowMinByMinList();
+
+        // ShowMinByMinList();
 
         countOfAddedWord++;
 
@@ -85,8 +85,8 @@ public class FillWordCreator : MonoBehaviour
         {
             AddNewWord();
         }
-       // if(bildIsDone)
-       // ShowMinByMinList();
+        // if(bildIsDone)
+        // ShowMinByMinList();
     }
 
 
@@ -135,11 +135,12 @@ public class FillWordCreator : MonoBehaviour
             return;
         }
 
-        if (CheckMinCountCellInZone(min)) 
+        if (CheckMinCountCellInZone(min))
         {
             //Debug.Log("CheckMinCountCellInZone(min) ---- 1");
-            // ShowMassInDebugLog();  
-            ResetWordsInMinZone(min);
+            Debug.Log("min = " + min);
+            ShowMassInDebugLog();
+            //ResetWordsInMinZone(min); 
             Debug.Log("===========================");
             ResetFillWord();
             return;
@@ -181,8 +182,8 @@ public class FillWordCreator : MonoBehaviour
             x = GetNextCell(mass, x);
             if (x == -1)
             {
-               // Debug.Log("GetNextCell    x == -1");
-                
+                // Debug.Log("GetNextCell    x == -1");
+
                 ResetFillWord();
                 break;
             }
@@ -266,7 +267,7 @@ public class FillWordCreator : MonoBehaviour
         {
             int up = GetNumberByPosInArray(i - 1, j);
 
-           
+
             //Debug.Log("Current = " + numberCurrentCell + " Up cell = " + up);
             if (GetValueByNubber(up) == 0)
             {
@@ -561,7 +562,7 @@ public class FillWordCreator : MonoBehaviour
         {
             if (count - max >= min)
             {
-                if (countOfAddedWord == 1)
+                if (countOfAddedWord == 0)
                     return Random.Range(max - min, max);
                 return Random.Range(min, max);
             }
@@ -620,14 +621,14 @@ public class FillWordCreator : MonoBehaviour
         {
             if (minList[i].lengtn == length)
             {
-                minList[i] = new MinList(minList[i].lengtn, minList[i].call, minList[i].count-1);
+                minList[i] = new MinList(minList[i].lengtn, minList[i].call, minList[i].count - 1);
             }
         }
-       // minList.Find(x => x.lengtn == length).count--;
+        // minList.Find(x => x.lengtn == length).count--;
     }
 
     // получить значение мини ума со списка доступных слов
-    public  void ShowMinByMinList()
+    public void ShowMinByMinList()
     {
         string str = "";
         foreach (var item in minList)
@@ -700,7 +701,7 @@ public class FillWordCreator : MonoBehaviour
     }
 
 
-    int  CheckNearestCellForEndTheWord(int number)
+    int CheckNearestCellForEndTheWord(int number)
     {
         int i = number / mass.GetLength(1);
         int j = number - i * mass.GetLength(1);
@@ -714,8 +715,8 @@ public class FillWordCreator : MonoBehaviour
                 if (GameProcess.cellNumbers[k][0] == up || GameProcess.cellNumbers[k][GameProcess.cellNumbers[k].Count - 1] == up)
                 {
                     return up;
-                }  
-            } 
+                }
+            }
         }
         //проверка нижней ячейки на пустоту и запись
         if (i + 1 < mass.GetLength(0))
@@ -728,7 +729,7 @@ public class FillWordCreator : MonoBehaviour
                 if (GameProcess.cellNumbers[k][0] == down || GameProcess.cellNumbers[k][GameProcess.cellNumbers[k].Count - 1] == down)
                 {
                     return down;
-                }  
+                }
             }
         }
         //проверка левой ячейки на пустоту и запись
@@ -743,7 +744,7 @@ public class FillWordCreator : MonoBehaviour
                 {
                     return left;
                 }
-                 
+
             }
         }
 
@@ -756,7 +757,7 @@ public class FillWordCreator : MonoBehaviour
                 if (GameProcess.cellNumbers[k][0] == right || GameProcess.cellNumbers[k][GameProcess.cellNumbers[k].Count - 1] == right)
                 {
                     return right;
-                }   
+                }
             }
         }
 
@@ -771,10 +772,10 @@ public class FillWordCreator : MonoBehaviour
         {
             if (ListPassedСells[i].Count < min)
             {
-               
+
                 for (int j = 0; j < ListPassedСells[i].Count; j++)
                 {
-                    buff.Add(ListPassedСells[i][j]);                  
+                    buff.Add(ListPassedСells[i][j]);
                 }
             }
         }
@@ -784,19 +785,37 @@ public class FillWordCreator : MonoBehaviour
         {
             res = CheckNearestCellForEndTheWord(buff[i]);
 
-            if (CountFreeNearestCell(buff[i]) == 1 && res !=-1)
+            if (CountFreeNearestCell(buff[i]) == 1 && res != -1)
             {
                 Debug.Log("REPLACE WORD");
-                ReplaceWord(buff[i], res);
+                ReplaceWord(buff);
             }
         }
-       // res = CheckNearestCellForEndTheWord(ListPassedСells[i][j]);
+        // res = CheckNearestCellForEndTheWord(ListPassedСells[i][j]);
 
     }
 
-    void ReplaceWord(int freeMinZoneCell, int endOfWord)
+    void ReplaceWord(List<int> buff)
     {
+        int res = -1;
 
+        List<int> numberEndCell = new List<int>();
+
+        for (int i = 0; i < buff.Count; i++)
+        {
+            if (CountFreeNearestCell(buff[i]) == 1)
+            {
+                res = CheckNearestCellForEndTheWord(buff[i]);
+                if (res != -1)
+                    numberEndCell.Add(res);
+                res = -1;
+            }
+        }
+
+        
+        for (int i = 0; i < GameProcess.cellNumbers.Count; i++)
+        {
+        }
     }
 
 }
