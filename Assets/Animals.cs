@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+//using UnityEngine;
 
-public class Animals : MonoBehaviour {
+public class Animals /*: MonoBehaviour*/ {
     public List<Word> words;
     // Use this for initialization
     public Animals()

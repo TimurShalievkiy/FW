@@ -24,7 +24,7 @@ public class GameProcess : MonoBehaviour
     {
         //creator.ShowMinByMinList();
         creator.ResetFillWord();
-        ShowCellNumbers();
+      // ShowCellNumbers();
         FillTheCellsWithLetters();  
         //creator.ShowMinByMinList();
         Debug.Log(FillWordCreator.countOfResets);

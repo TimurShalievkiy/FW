@@ -87,6 +87,8 @@ public class FillWordCreator : MonoBehaviour
         }
         // if(bildIsDone)
         // ShowMinByMinList();
+
+        SetColors(mass);
     }
 
 
@@ -127,10 +129,11 @@ public class FillWordCreator : MonoBehaviour
 
         int min = GetMinByMinList();
 
-        CheckEmptyCells(mass, min);
+        CheckEmptyCells(min);
 
         if (ListPassedСells.Count == 0)
         {
+            //Debug.Log("Done 1");
             bildIsDone = true;
             return;
         }
@@ -138,12 +141,27 @@ public class FillWordCreator : MonoBehaviour
         if (CheckMinCountCellInZone(min))
         {
             //Debug.Log("CheckMinCountCellInZone(min) ---- 1");
-            Debug.Log("min = " + min);
-            ShowMassInDebugLog();
-            //ResetWordsInMinZone(min); 
-            Debug.Log("===========================");
-            ResetFillWord();
-            return;
+            //Debug.Log("min = " + min);
+
+            //ShowMassInDebugLog();
+            ResetWordsInMinZone(min);
+            //ShowMassInDebugLog();
+
+            CheckEmptyCells(min);
+
+            if (ListPassedСells.Count == 0)
+            {
+               // Debug.Log("Done 2");
+                bildIsDone = true;
+                return;
+            }
+
+            if (CheckMinCountCellInZone(min))
+            {
+                //Debug.Log("ERRor CheckMinCountCellInZone(min) ---- 1");
+                ResetFillWord();
+                return;
+            }
         }
         CheckTupicalCell(mass);
 
@@ -172,33 +190,33 @@ public class FillWordCreator : MonoBehaviour
 
         int numOfLetters = GetNumberLetersInWord(GetCountOfCellInZoneByNumberOfCell(startCell));
         // Debug.Log("numOfLetters = " + numOfLetters);
-        SetValueByNumber(countOfAddedWord, x, ref mass);
+        SetValueByNumber(countOfAddedWord, x);
 
 
 
         ReturnToPreMass(mass, ref buffMas);
         for (int i = 0; i < numOfLetters - 1; i++)
         {
-            x = GetNextCell(mass, x);
+            x = GetNextCell(x);
             if (x == -1)
             {
-                // Debug.Log("GetNextCell    x == -1");
+               //Debug.Log("ERRor GetNextCell    x == -1");
 
                 ResetFillWord();
                 break;
             }
-            SetValueByNumber(countOfAddedWord, x, ref mass);
+            SetValueByNumber(countOfAddedWord, x);
         }
         DecrementCountInMinList(numOfLetters);
         if (CheckMinCountCellInZone(min))
         {
-            //Debug.Log("CheckMinCountCellInZone(min) ---- 2");
+            //Debug.Log("ERRor CheckMinCountCellInZone(min) ---- 2");
             ResetFillWord();
             return;
         }
 
         countOfAddedWord++;
-        SetColors(mass);
+        
 
     }
 
@@ -215,7 +233,7 @@ public class FillWordCreator : MonoBehaviour
     }
 
     //задать ячейке значение по номеру
-    void SetValueByNumber(int value, int number, ref int[,] mass)
+    void SetValueByNumber(int value, int number)
     {
         int i = number / mass.GetLength(1);
         int j = number - i * mass.GetLength(1);
@@ -253,12 +271,12 @@ public class FillWordCreator : MonoBehaviour
         }
     }
 
-    int GetNextCell(int[,] mass, int numberCurrentCell)
+    int GetNextCell( int numberCurrentCell)
     {
         int i = numberCurrentCell / mass.GetLength(1);
         int j = numberCurrentCell - i * mass.GetLength(1);
 
-        int[] dir = { 0, 0, 0, 0 };
+        int[] dir = { -1, -1, -1, -1 };
 
         int index = 0;
 
@@ -353,7 +371,7 @@ public class FillWordCreator : MonoBehaviour
         return i * mass.GetLength(1) + j;
     }
 
-    bool CheckEmptyCells(int[,] mass, int min)
+    bool CheckEmptyCells(int min)
     {
         ListPassedСells.Clear();
         rankOfListPassedCell = 0;
@@ -552,26 +570,40 @@ public class FillWordCreator : MonoBehaviour
 
         if (count >= min && count <= max)
         {
-            return Random.Range(min, count);// count;
+            int res = Random.Range(min, count);
+            //Debug.Log("count >= min && count <= max ==== " + res);
+            return res;// count;
         }
-        else if (count < min)
+        if (count < min)
         {
+           // Debug.Log("count < min");
             return 0;
         }
-        else if (count > max)
+        if (count > max)
         {
+            //Debug.Log("count > max");
             if (count - max >= min)
             {
+               // Debug.Log("count - max >= min");
                 if (countOfAddedWord == 0)
-                    return Random.Range(max - min, max);
-                return Random.Range(min, max);
+                {
+                    int res = Random.Range(max - min, max);
+                   // Debug.Log("countOfAddedWord == 0   = " + res);
+                    return res;
+                }
+                int res1 = Random.Range(min, max);
+               // Debug.Log("min,max   = " + res1);
+                return res1;
             }
             else
             {
-                return count - (min - (count - max));
+                int res = Random.Range(min,max);
+               // Debug.Log("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE = " + res);
+                return res;
+
             }
         }
-        Debug.Log("Not of all");
+       // Debug.Log("Not of all");
         return 0;
     }
 
@@ -766,56 +798,124 @@ public class FillWordCreator : MonoBehaviour
 
     void ResetWordsInMinZone(int min)
     {
-        int res = -1;
+        //int res = -1;
         List<int> buff = new List<int>();
         for (int i = 0; i < ListPassedСells.Count; i++)
         {
             if (ListPassedСells[i].Count < min)
             {
-
+                buff.Clear();
                 for (int j = 0; j < ListPassedСells[i].Count; j++)
                 {
                     buff.Add(ListPassedСells[i][j]);
                 }
-            }
-        }
-
-
-        for (int i = 0; i < buff.Count; i++)
-        {
-            res = CheckNearestCellForEndTheWord(buff[i]);
-
-            if (CountFreeNearestCell(buff[i]) == 1 && res != -1)
-            {
-                Debug.Log("REPLACE WORD");
                 ReplaceWord(buff);
             }
         }
-        // res = CheckNearestCellForEndTheWord(ListPassedСells[i][j]);
+
 
     }
 
     void ReplaceWord(List<int> buff)
     {
+
         int res = -1;
 
         List<int> numberEndCell = new List<int>();
 
         for (int i = 0; i < buff.Count; i++)
         {
-            if (CountFreeNearestCell(buff[i]) == 1)
+            int countFree = CountFreeNearestCell(buff[i]);
+            if (countFree <= 1)
             {
                 res = CheckNearestCellForEndTheWord(buff[i]);
                 if (res != -1)
                     numberEndCell.Add(res);
                 res = -1;
+                continue;
             }
         }
 
-        
+        int minWord = 999;
+        int sideToAdd = -1;
+        bool side = false;
+        List<int> numbersOfWord = new List<int>();
+
         for (int i = 0; i < GameProcess.cellNumbers.Count; i++)
         {
+            for (int j = 0; j < numberEndCell.Count; j++)
+            {
+                if (GameProcess.cellNumbers[i].Exists(x => x == numberEndCell[j]))
+                {
+                    if (minWord > GameProcess.cellNumbers[i].Count)
+                    {
+                        numbersOfWord = GameProcess.cellNumbers[i];
+                        minWord = GameProcess.cellNumbers[i].Count;
+                        sideToAdd = numberEndCell[j];
+
+                        if (GameProcess.cellNumbers[i].IndexOf(numberEndCell[j]) == 0)
+                            side = true;
+                        else
+                            side = false;
+                    }
+                }
+            }
         }
+        AddFreeNesrestCell(side, buff.Count, minWord, numbersOfWord, buff); 
+
+    }
+    void AddFreeNesrestCell(bool side, int buffCount, int minWord, List<int> numbersOfWord, List<int> buff)
+    {
+        int maxLength = GetMaxByMinList();
+
+        if (side)
+            numbersOfWord.Reverse();
+
+        if (buffCount + minWord <= maxLength)
+        {
+            AddFreeCellToWord(numbersOfWord);
+        }
+        else if (buffCount + minWord > maxLength)
+        {
+          //  Debug.Log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        }
+
+        if (side)
+            numbersOfWord.Reverse();
+    }
+    void AddFreeCellToWord(List<int> numbersOfWord)
+    {
+        int nextCell = numbersOfWord[numbersOfWord.Count - 1];
+        int value = GetValueByNubber(nextCell);
+
+        int counter = 0;
+        //Debug.Log("start cell = " + nextCell);
+        while (nextCell != -1)
+        {
+
+            nextCell = GetNextCell(nextCell);
+           
+            if (nextCell != -1)
+            {
+                //Debug.Log("Next cell = " + nextCell);
+                numbersOfWord.Add(nextCell);
+
+                int i = nextCell / mass.GetLength(1);
+                int j = nextCell - i * mass.GetLength(1);
+                mass[i, j] = value;
+               // SetValueByNumber(value, nextCell);
+            }
+            else
+                break;
+        }
+
+
+        //string s = "";
+        //for (int i = 0; i < numbersOfWord.Count; i++)
+        //{
+        //    s += numbersOfWord[i] + " ";
+        //}
+        //Debug.Log("word = " + s);
     }
 
 }

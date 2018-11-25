@@ -66,6 +66,9 @@ public class DictionaryController : MonoBehaviour
     //-----------------------------------------------------------------
     public static string GetWordByTheNumberOfLetters(int num, List<string> usedWords)
     {
+        //Debug.Log("num = " + num);
+        //Debug.Log("num = " + num);
+        //Debug.Log("Max = " + FillWordCreator.minList.Max(x => x.lengtn));
         int min = pasedWords.FindAll(x => x.lettersNumber == num).Min(x => x.callNumber);
         List<PassedWord> p = pasedWords.FindAll(x => x.lettersNumber == num).FindAll(x => x.callNumber == min);
         int id = p[Random.Range(0, p.Count)].id;
@@ -83,12 +86,21 @@ public class DictionaryController : MonoBehaviour
 
 
         SavePasedDictionary();
-        return words.Find(x => x.id == id).word;
+        string s = words.Find(x => x.id == id).word;
+        return s;
 
     }
     public void ClearPlayerPrefs()
     {
         PlayerPrefs.DeleteAll();
+        string str = "";
+        foreach (var item in words)
+        {
+            str += item.id + " " + item.callNumber + " " + item.numberOfLetters + " ";
+        }
+        PlayerPrefs.SetString(currentTopic.ToString(), str);
+        PlayerPrefs.Save();
+        LoadPasedDictionary();
     }
 
     static void SavePasedDictionary()
