@@ -26,8 +26,9 @@ public class GameProcess : MonoBehaviour
         creator.ResetFillWord();
       // ShowCellNumbers();
         FillTheCellsWithLetters();  
+        DictionaryController.SavePasedDictionary();
         //creator.ShowMinByMinList();
-        Debug.Log(FillWordCreator.countOfResets);
+        // Debug.Log(FillWordCreator.countOfResets);
         FillWordCreator.countOfResets = 0;
 
     }
