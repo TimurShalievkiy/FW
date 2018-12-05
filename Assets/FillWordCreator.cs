@@ -19,8 +19,8 @@ public class FillWordCreator : MonoBehaviour
     int rankOfListPassedCell = 0; // номер пустой зоны
 
 
-    public int columns = 5;
-    public int rows = 6;
+    public int columns;
+    public int rows ;
 
     int countOfAddedWord = 0;// номер добавляемого слова
 
@@ -52,6 +52,10 @@ public class FillWordCreator : MonoBehaviour
     void Start()
     {
         minList = DictionaryController.GetMinList();
+        
+        rows =  CellGrid.GetComponent<GridLayoutGroup>().constraintCount;
+        columns = CellGrid.transform.childCount / rows;
+        Debug.Log(columns + " - " + rows);
         //InvokeRepeating("ResetFillWord", 1.0f, 0.2f);
     }
 
