@@ -62,6 +62,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Animals.cs" />
+    <Compile Include="Assets\Cell.cs" />
+    <Compile Include="Assets\CellController.cs" />
     <Compile Include="Assets\DictionaryController.cs" />
     <Compile Include="Assets\FillWordCreator.cs" />
     <Compile Include="Assets\GameProcess.cs" />

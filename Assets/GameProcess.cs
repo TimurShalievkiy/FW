@@ -15,20 +15,16 @@ public class GameProcess : MonoBehaviour
     void Start()
     {
         usedWords = new List<string>();
-        //PlayerPrefs.DeleteAll();
-       // InvokeRepeating("SetGameGread", 1.0f, 0.7f);
+
         
     }
 
     public void SetGameGread()   
     {
-        //creator.ShowMinByMinList();
         creator.ResetFillWord();
-      // ShowCellNumbers();
         FillTheCellsWithLetters();  
         DictionaryController.SavePasedDictionary();
-        //creator.ShowMinByMinList();
-        // Debug.Log(FillWordCreator.countOfResets);
+
         FillWordCreator.countOfResets = 0;
 
     }

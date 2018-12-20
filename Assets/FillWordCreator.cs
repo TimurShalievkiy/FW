@@ -19,8 +19,8 @@ public class FillWordCreator : MonoBehaviour
     int rankOfListPassedCell = 0; // номер пустой зоны
 
 
-    public int columns;
-    public int rows ;
+    public static int columns;
+    public static int rows ;
 
     int countOfAddedWord = 0;// номер добавляемого слова
 
@@ -55,8 +55,7 @@ public class FillWordCreator : MonoBehaviour
         
         rows =  CellGrid.GetComponent<GridLayoutGroup>().constraintCount;
         columns = CellGrid.transform.childCount / rows;
-        Debug.Log(columns + " - " + rows);
-        //InvokeRepeating("ResetFillWord", 1.0f, 0.2f);
+  
     }
 
 
@@ -95,38 +94,6 @@ public class FillWordCreator : MonoBehaviour
         SetColors(mass);
     }
 
-
-
-    //void FillingFirstWord(int[,] mass)
-    //{
-    //    int startCell = Random.Range(0, mass.GetLength(0) * mass.GetLength(1));
-
-    //    SetValueByNumber(countOfAddedWord, startCell, ref mass);
-
-    //    CellGrid.transform.GetChild(startCell).GetComponent<Image>().color = Color.blue;
-
-    //    int x = startCell;
-
-    //    ListPassedСells.Clear();
-    //    CheckEmptyCells(mass, GetMinByMinList());
-
-    //    int numberOfLetters = GetNumberLetersInWord(ListPassedСells[0].Count);
-
-    //    for (int i = 0; i < numberOfLetters - 1; i++)
-    //    {
-    //        x = GetNextCell(mass, x);
-    //        if (x == -1)
-    //        {
-    //            ResetFillWord();
-    //            break;
-    //        }
-
-    //        SetValueByNumber(1, x, ref mass);
-
-    //    }
-    //    SetColors(mass);
-    //}
-    //задать значение в массив по номеру ячейки
 
     public void AddNewWord()
     {
