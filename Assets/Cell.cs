@@ -33,16 +33,7 @@ public class Cell : MonoBehaviour
         }
 
     }
-    //public void PointerExit()
-    //{
-    //    //this.gameObject.GetComponent<Image>().color = Color.white;
-    //}
 
-    //public void PointerUp()
-    //{
-    //    Debug.Log(this.gameObject.name + " Up");
-
-    //}
     public bool IsNearest(int num)
     {
         int i = num / FillWordCreator.rows;
@@ -91,7 +82,6 @@ public class Cell : MonoBehaviour
 
     int GetNumberByPosInArray(int i, int j)
     {
-        //Debug.Log("i = " + i + " j = " + j);
         return i * FillWordCreator.rows + j;
     }
 

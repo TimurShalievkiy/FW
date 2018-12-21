@@ -142,14 +142,11 @@ public class DictionaryController : MonoBehaviour
 
     static void LoadPasedDictionary()
     {
-       // Debug.Log("Load");
-        //Debug.Log(currentTopic.ToString());
         if (PlayerPrefs.HasKey(currentTopic.ToString()))
         {
             string str = PlayerPrefs.GetString(currentTopic.ToString());
             string[] massSplit = str.Split(' ');
             pasedWords = new List<PassedWord>();
-
 
             for (int i = 0; i < massSplit.Length - 2; i += 3)
             {

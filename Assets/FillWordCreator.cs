@@ -11,7 +11,6 @@ public class FillWordCreator : MonoBehaviour
 
     List<List<int>> ListPassedСells; // пройденые пустые ячейки с разделением на зоны
     List<int> deadEndCell; //тупиковые ячейки с которых удобнее всего начинать слова
-    //List<string> ListWordsForFillword;
 
     int[,] mass;
 
@@ -28,7 +27,6 @@ public class FillWordCreator : MonoBehaviour
 
     public static int countOfResets = 0;
 
-
     public struct MinList
     {
         public int lengtn;
@@ -44,9 +42,6 @@ public class FillWordCreator : MonoBehaviour
     }
 
     public static List<MinList> minList;//получение списка доступных слов для заполнения
-
-
-
 
     // Use this for initialization
     void Start()
@@ -111,12 +106,7 @@ public class FillWordCreator : MonoBehaviour
 
         if (CheckMinCountCellInZone(min))
         {
-            //Debug.Log("CheckMinCountCellInZone(min) ---- 1");
-            //Debug.Log("min = " + min);
-
-            //ShowMassInDebugLog();
             ResetWordsInMinZone(min);
-            //ShowMassInDebugLog();
 
             CheckEmptyCells(min);
 
@@ -163,16 +153,12 @@ public class FillWordCreator : MonoBehaviour
         // Debug.Log("numOfLetters = " + numOfLetters);
         SetValueByNumber(countOfAddedWord, x);
 
-
-
         ReturnToPreMass(mass, ref buffMas);
         for (int i = 0; i < numOfLetters - 1; i++)
         {
             x = GetNextCell(x);
             if (x == -1)
             {
-               //Debug.Log("ERRor GetNextCell    x == -1");
-
                 ResetFillWord();
                 break;
             }
@@ -181,14 +167,11 @@ public class FillWordCreator : MonoBehaviour
         DecrementCountInMinList(numOfLetters);
         if (CheckMinCountCellInZone(min))
         {
-            //Debug.Log("ERRor CheckMinCountCellInZone(min) ---- 2");
             ResetFillWord();
             return;
         }
 
         countOfAddedWord++;
-        
-
     }
 
     //перписать значения с одного массива во второй
