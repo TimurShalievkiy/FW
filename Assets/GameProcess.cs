@@ -25,7 +25,10 @@ public class GameProcess : MonoBehaviour
         FillTheCellsWithLetters();  
         DictionaryController.SavePasedDictionary();
 
+
         FillWordCreator.countOfResets = 0;
+
+        this.gameObject.transform.GetComponent<CellController>().ResetCellsValue();
 
     }
     public static void ShowCellNumbers()

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Cell : MonoBehaviour
 {
-
+    public bool used = false;
 
     // Use this for initialization
     void Start()
@@ -19,19 +19,21 @@ public class Cell : MonoBehaviour
     //}
     public void PointerEnter()
     {
-        if (CellController.cells.Count == 0)
+        if (!used)
         {
-            CellController.cells.Add(this.gameObject);
-            this.gameObject.GetComponent<Image>().color = Color.cyan;
-            //Debug.Log("Add");
-            return;
+            if (CellController.cells.Count == 0)
+            {
+                CellController.cells.Add(this.gameObject);
+                this.gameObject.GetComponent<Image>().color = CellController.SetColor();
+                return;
+            }
+            else if (!CellController.cells.Exists(x => x == this.gameObject)
+                      && IsNearest(this.gameObject.transform.GetSiblingIndex()))
+            {
+                this.gameObject.GetComponent<Image>().color = CellController.SetColor();
+                CellController.cells.Add(this.gameObject);
+            }
         }
-        else if (!CellController.cells.Exists(x=>x == this.gameObject) && IsNearest(this.gameObject.transform.GetSiblingIndex()))
-        {
-            this.gameObject.GetComponent<Image>().color = Color.cyan;
-            CellController.cells.Add(this.gameObject);
-        }
-
     }
 
     public bool IsNearest(int num)
@@ -46,21 +48,21 @@ public class Cell : MonoBehaviour
             {
                 //Debug.Log("i - 1 >= 0 ");
                 return true;
-            } 
-           
+            }
+
         }
         if (i + 1 < FillWordCreator.columns)
         {
             if (GetNumberByPosInArray(i + 1, j) == index)
             {
-               // Debug.Log("i + 1 < FillWordCreator.columns");
+                // Debug.Log("i + 1 < FillWordCreator.columns");
                 return true;
             }
-            
+
         }
         if (j - 1 >= 0)
         {
-            if (GetNumberByPosInArray(i , j-1) == index)
+            if (GetNumberByPosInArray(i, j - 1) == index)
             {
                 //Debug.Log("j - 1 >= 0");
                 return true;
@@ -74,9 +76,9 @@ public class Cell : MonoBehaviour
                 //Debug.Log("j + 1 < FillWordCreator.rows");
                 return true;
             }
-           
+
         }
-       // Debug.Log("None");
+        // Debug.Log("None");
         return false;
     }
 
