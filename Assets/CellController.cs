@@ -14,21 +14,20 @@ public class CellController : MonoBehaviour
     public static List<GameObject> cells;
     void Start()
     {
-
         cells = new List<GameObject>();
     }
 
     // Update is called once per frame
     void Update()
     {
-
+  
     }
 
     public void PointerExit()
     {
         string res = "";
 
-        //return to prev state
+       
 
         for (int i = 0; i < cells.Count; i++)
         {
@@ -56,24 +55,26 @@ public class CellController : MonoBehaviour
         {
             cellsList.Add(cells[i].transform.GetSiblingIndex());
         }
-        if(GameProcess.cellNumbers != null)
-        for (int i = 0; i < GameProcess.cellNumbers.Count; i++)
+        if (GameProcess.cellNumbers != null)
         {
-            if (cellsList.Count == GameProcess.cellNumbers[i].Count && cellsList[0] == GameProcess.cellNumbers[i][0])
+            for (int i = 0; i < GameProcess.cellNumbers.Count; i++)
             {
-                for (int j = 0; j < cellsList.Count; j++)
+                if (cellsList.Count == GameProcess.cellNumbers[i].Count && cellsList[0] == GameProcess.cellNumbers[i][0])
                 {
-                    if (cellsList[j] == GameProcess.cellNumbers[i][j])
+                    for (int j = 0; j < cellsList.Count; j++)
                     {
-                        flag = true;
+                        if (cellsList[j] == GameProcess.cellNumbers[i][j])
+                        {
+                            flag = true;
+                        }
+                        else
+                        {
+                            flag = false;
+                            break;
+                        }
                     }
-                    else
-                    {
-                        flag = false;
-                        break;
-                    }
-                }
 
+                }
             }
         }
 
@@ -95,6 +96,7 @@ public class CellController : MonoBehaviour
         else
             t.color = Color.red;
         cells.Clear();
+
     }
     bool СheckForСompletion()
     {
@@ -104,7 +106,7 @@ public class CellController : MonoBehaviour
         {
             if (!CellGrid.transform.GetChild(i).transform.GetComponent<Cell>().used)
             {
-                Debug.Log(CellGrid.transform.GetChild(i).transform.GetComponent<Cell>().used);
+                //Debug.Log(CellGrid.transform.GetChild(i).transform.GetComponent<Cell>().used);
                 return false;               
             }
         }
