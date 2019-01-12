@@ -67,6 +67,8 @@
     <Compile Include="Assets\Scripts\DictionaryController.cs" />
     <Compile Include="Assets\Scripts\FillWordCreator.cs" />
     <Compile Include="Assets\Scripts\GameProcess.cs" />
+    <Compile Include="Assets\Scripts\ScenesController.cs" />
+    <Compile Include="Assets\Scripts\ThemsController.cs" />
     <Compile Include="Assets\Scripts\Word.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>D:/MyProjects/FW/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>

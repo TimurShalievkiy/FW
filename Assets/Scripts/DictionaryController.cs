@@ -9,7 +9,7 @@ public class DictionaryController : MonoBehaviour
 
     // public GameObject Animals;
 
-    public enum Topic { Random = 0, Animals = 1 }
+    public  enum Topic { Random = 0, Animals = 1 }
 
     public struct PassedWord
     {
@@ -27,17 +27,16 @@ public class DictionaryController : MonoBehaviour
     static List<Word> words;
     static List<PassedWord> pasedWords;
 
-    public static Topic currentTopic = Topic.Animals;
+    public static Topic currentTopic ;
 
 
     // Use this for initialization
     void Start()
     {
+        Debug.Log(currentTopic);
         pasedWords = new List<PassedWord>();
         words = FillTheWordsOnTheCurrentTopic();
         LoadPasedDictionary();
-        //text.GetComponent<Text>().text = pasedWords.Count.ToString();
-        //Debug.Log( " count = "+ pasedWords.Count);
     }
 
     public static int GetMin()

@@ -15,8 +15,9 @@ public class GameProcess : MonoBehaviour
     void Start()
     {
         usedWords = new List<string>();
+        SetGameGread();
 
-        
+
     }
 
     public void SetGameGread()   
