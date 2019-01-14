@@ -27,7 +27,6 @@ public class CellController : MonoBehaviour
     {
         string res = "";
 
-       
 
         for (int i = 0; i < cells.Count; i++)
         {
@@ -55,6 +54,7 @@ public class CellController : MonoBehaviour
         {
             cellsList.Add(cells[i].transform.GetSiblingIndex());
         }
+
         if (GameProcess.cellNumbers != null)
         {
             for (int i = 0; i < GameProcess.cellNumbers.Count; i++)
@@ -89,12 +89,14 @@ public class CellController : MonoBehaviour
             colorNum++;
             if (СheckForСompletion())
             {
+                DictionaryController.SavePasedDictionary();
                 ResetCellsValue();
                 this.gameObject.transform.GetComponent< GameProcess>().SetGameGread();
             }
         }
         else
             t.color = Color.red;
+
         cells.Clear();
 
     }

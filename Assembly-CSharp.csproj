@@ -66,6 +66,7 @@
     <Compile Include="Assets\Scripts\DB\Animals.cs" />
     <Compile Include="Assets\Scripts\DictionaryController.cs" />
     <Compile Include="Assets\Scripts\FillWordCreator.cs" />
+    <Compile Include="Assets\Scripts\GameFieldCreator.cs" />
     <Compile Include="Assets\Scripts\GameProcess.cs" />
     <Compile Include="Assets\Scripts\ScenesController.cs" />
     <Compile Include="Assets\Scripts\ThemsController.cs" />

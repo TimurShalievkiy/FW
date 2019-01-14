@@ -22,9 +22,11 @@ public class GameProcess : MonoBehaviour
 
     public void SetGameGread()   
     {
+ 
+        CellGrid.GetComponent<GameFieldCreator>().CreateGameField();
         creator.ResetFillWord();
         FillTheCellsWithLetters();  
-        DictionaryController.SavePasedDictionary();
+        //DictionaryController.SavePasedDictionary();
 
 
         FillWordCreator.countOfResets = 0;

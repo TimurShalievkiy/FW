@@ -82,7 +82,7 @@ public class DictionaryController : MonoBehaviour
         }
 
 
-        //SavePasedDictionary();
+
         string s = words.Find(x => x.id == id).word;
         return s;
 
@@ -102,7 +102,7 @@ public class DictionaryController : MonoBehaviour
 
     static public void SavePasedDictionary()
     {
-        //Debug.Log("Save");
+       // Debug.Log("Save");
         string str = "";
 
         if (pasedWords.Count > 0)
@@ -141,6 +141,7 @@ public class DictionaryController : MonoBehaviour
 
     static void LoadPasedDictionary()
     {
+        //Debug.Log("Load");
         if (PlayerPrefs.HasKey(currentTopic.ToString()))
         {
             string str = PlayerPrefs.GetString(currentTopic.ToString());
@@ -154,6 +155,7 @@ public class DictionaryController : MonoBehaviour
         }
         else
         {
+           // Debug.Log(1);
             SavePasedDictionary();
             LoadPasedDictionary();
         }

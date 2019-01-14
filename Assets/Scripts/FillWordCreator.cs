@@ -56,6 +56,10 @@ public class FillWordCreator : MonoBehaviour
 
     public void ResetFillWord()
     {
+        //Debug.Log("reset");
+        rows = CellGrid.GetComponent<GridLayoutGroup>().constraintCount;
+        columns = CellGrid.transform.childCount / rows;
+
         bildIsDone = false;
 
         countOfResets++;
@@ -119,7 +123,6 @@ public class FillWordCreator : MonoBehaviour
 
             if (CheckMinCountCellInZone(min))
             {
-                //Debug.Log("ERRor CheckMinCountCellInZone(min) ---- 1");
                 ResetFillWord();
                 return;
             }
@@ -214,6 +217,7 @@ public class FillWordCreator : MonoBehaviour
     void SetCellNumbers()
     {
         int index = 0;
+       // Debug.Log(CellGrid.transform.childCount);
         for (int i = 0; i < mass.GetLength(0); i++)
         {
             for (int j = 0; j < mass.GetLength(1); j++)
@@ -504,6 +508,7 @@ public class FillWordCreator : MonoBehaviour
     //проверка зон на вместимость минимальной длины слова
     bool CheckMinCountCellInZone(int min)
     {
+       
         for (int i = 0; i < ListPassedСells.Count; i++)
         {
             if (ListPassedСells[i].Count < min)
