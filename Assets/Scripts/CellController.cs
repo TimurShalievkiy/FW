@@ -106,6 +106,7 @@ public class CellController : MonoBehaviour
             infoPanel.gameObject.SetActive(true);
             Transform g = infoPanel.transform.GetChild(0);
             g.GetComponent<Text>().text = "Попробуйте сложить слово \"" + t.text.ToUpper() + "\" по другому";
+            cells.Clear();
 
         }
         //неправльное слово (возможно вставить поиск не заданных слов)
