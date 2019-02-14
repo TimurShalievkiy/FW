@@ -7,6 +7,8 @@ public class CellController : MonoBehaviour
 {
     public Text t;
     public GameObject CellGrid;
+    public GameProcess gameProcess;
+    public GameObject infoPanel;
 
     static int colorNum = 1;
 
@@ -18,10 +20,10 @@ public class CellController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    //void Update()
+    //{
   
-    }
+    //}
 
     public void PointerExit()
     {
@@ -57,6 +59,9 @@ public class CellController : MonoBehaviour
 
         if (GameProcess.cellNumbers != null)
         {
+         
+
+
             for (int i = 0; i < GameProcess.cellNumbers.Count; i++)
             {
                 if (cellsList.Count == GameProcess.cellNumbers[i].Count && cellsList[0] == GameProcess.cellNumbers[i][0])
@@ -77,25 +82,37 @@ public class CellController : MonoBehaviour
                 }
             }
         }
-
+        //если слово отгадано
         if (flag)
         {
             t.color = Color.green;
             for (int i = 0; i < cells.Count; i++)
             {
-               cells[i].transform.GetComponent<Cell>().used = true;
-               cells[i].GetComponent<Image>().color = SetColor();
+                cells[i].transform.GetComponent<Cell>().used = true;
+                cells[i].GetComponent<Image>().color = SetColor();
             }
             colorNum++;
             if (СheckForСompletion())
             {
                 DictionaryController.SavePasedDictionary();
                 ResetCellsValue();
-                this.gameObject.transform.GetComponent< GameProcess>().SetGameGread();
+                this.gameObject.transform.GetComponent<GameProcess>().SetGameGread();
             }
         }
+        //обработка правильного слова при неправильных ячейках
+        else if (gameProcess.usedWords.Find(x => x.ToLower() == t.text.ToLower()) !=null)
+        {
+            Debug.Log("The same");
+            infoPanel.gameObject.SetActive(true);
+            Transform g = infoPanel.transform.GetChild(0);
+            g.GetComponent<Text>().text = "Попробуйте сложить слово \"" + t.text.ToUpper() + "\" по другому";
+
+        }
+        //неправльное слово (возможно вставить поиск не заданных слов)
         else
             t.color = Color.red;
+
+
 
         cells.Clear();
 

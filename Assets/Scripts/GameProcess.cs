@@ -9,7 +9,7 @@ public class GameProcess : MonoBehaviour
     public GameObject CellGrid;
 
     public static List<List<int>> cellNumbers;
-    List<string> usedWords;
+    public List<string> usedWords;
     int counter = 0;
     // Use this for initialization
     void Start()
@@ -73,6 +73,7 @@ public class GameProcess : MonoBehaviour
                 index++;
             }
         }
+
 
 
     }

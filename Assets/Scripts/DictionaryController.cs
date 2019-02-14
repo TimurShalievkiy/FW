@@ -25,7 +25,7 @@ public class DictionaryController : MonoBehaviour
         }
     }
     static List<Word> words;
-    static List<PassedWord> pasedWords;
+     static List<PassedWord> pasedWords;
 
     public static Topic currentTopic ;
 

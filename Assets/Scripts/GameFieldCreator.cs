@@ -19,8 +19,7 @@ public class GameFieldCreator : MonoBehaviour
 
         if (difficulty > 6)
         {
-            difficulty = 1;
-            
+            difficulty = 1;          
         }
        
         switch (difficulty)
