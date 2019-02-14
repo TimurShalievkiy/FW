@@ -9,6 +9,8 @@ public class CellController : MonoBehaviour
     public GameObject CellGrid;
     public GameProcess gameProcess;
     public GameObject infoPanel;
+    public static List<int> colorsId;
+    public static int currentWordColorId; 
 
     static int colorNum = 1;
 
@@ -17,13 +19,17 @@ public class CellController : MonoBehaviour
     void Start()
     {
         cells = new List<GameObject>();
+        
     }
 
     // Update is called once per frame
-    //void Update()
-    //{
-  
-    //}
+    void Update()
+    {
+        if (Input.touchCount == 0)
+        {
+            PointerExit();
+        }
+    }
 
     public void PointerExit()
     {
@@ -89,7 +95,7 @@ public class CellController : MonoBehaviour
             for (int i = 0; i < cells.Count; i++)
             {
                 cells[i].transform.GetComponent<Cell>().used = true;
-                cells[i].GetComponent<Image>().color = SetColor();
+                cells[i].GetComponent<Image>().color = SetColor(currentWordColorId);
             }
             colorNum++;
             if (СheckForСompletion())
@@ -98,6 +104,7 @@ public class CellController : MonoBehaviour
                 ResetCellsValue();
                 this.gameObject.transform.GetComponent<GameProcess>().SetGameGread();
             }
+            currentWordColorId++;
         }
         //обработка правильного слова при неправильных ячейках
         else if (gameProcess.usedWords.Find(x => x.ToLower() == t.text.ToLower()) !=null)
@@ -126,7 +133,6 @@ public class CellController : MonoBehaviour
         {
             if (!CellGrid.transform.GetChild(i).transform.GetComponent<Cell>().used)
             {
-                //Debug.Log(CellGrid.transform.GetChild(i).transform.GetComponent<Cell>().used);
                 return false;               
             }
         }
@@ -162,16 +168,65 @@ public class CellController : MonoBehaviour
                 return new Color(0.2f, 0.4f, 0.8f);
         }
                 return Color.white;
-        }
-
-   public void ResetCellsValue()
+    }
+    public static Color SetColor(int num)
     {
-        colorNum = 0;
+        
+        switch (colorsId[num])
+        {
+            case 0:
+                return Color.white;
+            case 1:
+                return Color.blue;
+            case 2:
+                return Color.green;
+            case 3:
+                return Color.cyan;
+            case 4:
+                return Color.grey;
+            case 5:
+                return Color.yellow;
+            case 6:
+                return Color.red;
+            case 7:
+                return Color.magenta;
+            case 8:
+                return new Color(0.3f, 0.8f, 0.2f);
+            case 9:
+                return new Color(0.5f, 0.9f, 0.5f);
+            case 10:
+                return new Color(0.2f, 0.4f, 0.8f);
+        }
+        return Color.white;
+    }
+
+    public void ResetCellsValue()
+    {
         for (int i = 0; i < CellGrid.transform.childCount; i++)
         {
             CellGrid.transform.GetChild(i).transform.GetComponent<Cell>().used = false;
-            //CellGrid.transform.GetChild(i).GetComponent<Image>().color = SetColor();
+            CellGrid.transform.GetChild(i).GetComponent<Image>().color = Color.white;
         }
-        colorNum = 1;
+    }
+    public void SetColorForUsedWords()
+    {
+        currentWordColorId = 0;
+        colorsId = new List<int>();
+        List<int> listIndex = new List<int>();
+        for (int i = 0; i < gameProcess.usedWords.Count; i++)
+        {
+            listIndex.Add(i);
+        }
+
+        int index;
+        int count = listIndex.Count;
+        while (count > 0)
+        {          
+            index = Random.Range(0, listIndex.Count);
+            colorsId.Add(listIndex[index]+1);
+            listIndex.Remove(listIndex[index]);
+            count--;
+        }
+
     }
 }

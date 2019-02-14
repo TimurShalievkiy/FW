@@ -32,6 +32,7 @@ public class GameProcess : MonoBehaviour
         FillWordCreator.countOfResets = 0;
 
         this.gameObject.transform.GetComponent<CellController>().ResetCellsValue();
+        this.gameObject.transform.GetComponent<CellController>().SetColorForUsedWords();
 
     }
     public static void ShowCellNumbers()
@@ -66,6 +67,7 @@ public class GameProcess : MonoBehaviour
             usedWords.Add(str);
 
             int index = 0;
+            int idWord = usedWords.IndexOf(str);
             for (int j = 0; j < cellNumbers[i].Count; j++)
             {
  

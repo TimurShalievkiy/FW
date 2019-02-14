@@ -24,13 +24,12 @@ public class Cell : MonoBehaviour
             if (CellController.cells.Count == 0)
             {
                 CellController.cells.Add(this.gameObject);
-                this.gameObject.GetComponent<Image>().color = CellController.SetColor();
-               // return;
+                this.gameObject.GetComponent<Image>().color = CellController.SetColor(CellController.currentWordColorId);
             }
             else if (!CellController.cells.Exists(x => x == this.gameObject)
                       && IsNearest(this.gameObject.transform.GetSiblingIndex()))
             {
-                this.gameObject.GetComponent<Image>().color = CellController.SetColor();
+                this.gameObject.GetComponent<Image>().color = CellController.SetColor(CellController.currentWordColorId);
                 CellController.cells.Add(this.gameObject);
             }
             else if (CellController.cells.Exists(x => x == this.gameObject))
