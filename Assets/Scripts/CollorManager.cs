@@ -19,8 +19,7 @@ public class CollorManager : MonoBehaviour
 
         //------------Добавление цветов в список----------
         colors = new List<Color>();
-        ColorUtility.TryParseHtmlString("#FFFFFF", out c);
-        colors.Add(c);
+
         ColorUtility.TryParseHtmlString("#6A5ACD", out c);
         colors.Add(c);
         ColorUtility.TryParseHtmlString("#660099", out c);
@@ -29,20 +28,31 @@ public class CollorManager : MonoBehaviour
         colors.Add(c);
         ColorUtility.TryParseHtmlString("#C9A0DC", out c);
         colors.Add(c);
+        ColorUtility.TryParseHtmlString("#66CDAA", out c);
+        colors.Add(c);
+        ColorUtility.TryParseHtmlString("# C34D0A", out c);
+        colors.Add(c);
+        ColorUtility.TryParseHtmlString("#587246", out c);
+        colors.Add(c);
+        ColorUtility.TryParseHtmlString("#57A639", out c);
+        colors.Add(c);
+        ColorUtility.TryParseHtmlString("#BD33A4", out c);
+        colors.Add(c);
 
 
         //------------Перемешивание списка ---------------
-        for (int i = 1; i < colors.Count; i++)
-        {
-            Color tmp = colors[i];
-            colors.RemoveAt(i);
-            colors.Insert(Random.Range(1, colors.Count), tmp);
-        }
+        //for (int i = 0; i < colors.Count; i++)
+        //{
+        //    Color tmp = colors[i];
+        //    colors.RemoveAt(i);
+        //    colors.Insert(Random.Range(1, colors.Count), tmp);
+        //}
+        MixListColor();
     }
 
     public static void MixListColor()
     {
-        for (int i = 1; i < colors.Count; i++)
+        for (int i = 0; i < colors.Count; i++)
         {
             Color tmp = colors[i];
             colors.RemoveAt(i);

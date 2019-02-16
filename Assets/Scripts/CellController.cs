@@ -12,7 +12,7 @@ public class CellController : MonoBehaviour
     public static List<int> colorsId;
     public static int currentWordColorId; 
 
-    static int colorNum = 1;
+    static int colorNum = 0;
 
     // Use this for initialization
     public static List<GameObject> cells;
@@ -211,27 +211,7 @@ public class CellController : MonoBehaviour
             CellGrid.transform.GetChild(i).transform.GetComponent<Cell>().used = false;
             CellGrid.transform.GetChild(i).GetComponent<Image>().color = Color.white;
         }
-        colorNum = 1;
+        colorNum = 0;
     }
-    //public void SetColorForUsedWords()
-    //{
-    //    currentWordColorId = 0;
-    //    colorsId = new List<int>();
-    //    List<int> listIndex = new List<int>();
-    //    for (int i = 0; i < gameProcess.usedWords.Count; i++)
-    //    {
-    //        listIndex.Add(i);
-    //    }
 
-    //    int index;
-    //    int count = listIndex.Count;
-    //    while (count > 0)
-    //    {          
-    //        index = Random.Range(0, listIndex.Count);
-    //        colorsId.Add(listIndex[index]+1);
-    //        listIndex.Remove(listIndex[index]);
-    //        count--;
-    //    }
-
-    //}
 }

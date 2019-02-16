@@ -602,18 +602,6 @@ public class FillWordCreator : MonoBehaviour
 
         m = minList.FindAll(x => x.count > 0).Where(x => x.lengtn == max2).First();
 
-
-        //while (true)
-        //{
-        //    m = minList.FindAll(x => x.count > 0).FindAll(x => x.lengtn == max).First(x => x.call == minList.Min(y => y.call));
-        //    if (m.count == 0)
-        //    {
-        //        max--;
-        //    }
-        //    break;
-        //}
-        //MinList m = minList.FindAll(x => x.count > 0).FindAll(x => x.lengtn == minList.Max(y => y.lengtn)).First(x => x.call == minList.Min(y => y.call));
-        
         return m.lengtn;
     }
     void DecrementCountInMinList(int length)
