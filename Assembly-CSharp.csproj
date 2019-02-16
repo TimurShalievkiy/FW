@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Cell.cs" />
     <Compile Include="Assets\Scripts\CellController.cs" />
+    <Compile Include="Assets\Scripts\CollorManager.cs" />
     <Compile Include="Assets\Scripts\DB\Animals.cs" />
     <Compile Include="Assets\Scripts\DictionaryController.cs" />
     <Compile Include="Assets\Scripts\FillWordCreator.cs" />

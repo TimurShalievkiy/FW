@@ -64,10 +64,7 @@ public class CellController : MonoBehaviour
         }
 
         if (GameProcess.cellNumbers != null)
-        {
-         
-
-
+        {         
             for (int i = 0; i < GameProcess.cellNumbers.Count; i++)
             {
                 if (cellsList.Count == GameProcess.cellNumbers[i].Count && cellsList[0] == GameProcess.cellNumbers[i][0])
@@ -84,7 +81,6 @@ public class CellController : MonoBehaviour
                             break;
                         }
                     }
-
                 }
             }
         }
@@ -95,7 +91,7 @@ public class CellController : MonoBehaviour
             for (int i = 0; i < cells.Count; i++)
             {
                 cells[i].transform.GetComponent<Cell>().used = true;
-                cells[i].GetComponent<Image>().color = SetColor(currentWordColorId);
+                cells[i].GetComponent<Image>().color =  SetColor();
             }
             colorNum++;
             if (СheckForСompletion())
@@ -142,31 +138,39 @@ public class CellController : MonoBehaviour
 
    public static Color SetColor()
     {
-        switch (colorNum)
-        {
-            case 0:
-                return Color.white;
-            case 1:
-                return Color.blue;
-            case 2:
-                return Color.green;
-            case 3:
-                return Color.cyan;
-            case 4:
-                return Color.grey;
-            case 5:
-                return Color.yellow;
-            case 6:
-                return Color.red;
-            case 7:
-                return Color.magenta;
-            case 8:
-                return new Color(0.3f, 0.8f, 0.2f);
-            case 9:
-                return new Color(0.5f, 0.9f, 0.5f);
-            case 10:
-                return new Color(0.2f, 0.4f, 0.8f);
-        }
+
+        //switch (colorNum)
+        //{
+        //    case 0:
+        //        Color c;
+        //        ColorUtility.TryParseHtmlString("#FFFFFF", out c);
+        //        return c;
+        //        //Color.white;
+        //    case 1:
+        //        return new Color(37, 109, 123);//return Color.blue;
+        //    case 2:
+        //         return new Color(146, 78, 125);// Color.green;
+        //    case 3:
+        //        return Color.cyan;
+        //    case 4:
+        //        return Color.grey;
+        //    case 5:
+        //        return Color.yellow;
+        //    case 6:
+        //        return Color.red;
+        //    case 7:
+        //        return Color.magenta;
+        //    case 8:
+        //        return new Color(0.3f, 0.8f, 0.2f);
+        //    case 9:
+        //        return new Color(0.5f, 0.9f, 0.5f);
+        //    case 10:
+        //        return new Color(0.2f, 0.4f, 0.8f);
+        //}
+        Color c = CollorManager.colors[colorNum];
+        if (c != null)
+            return c;
+
                 return Color.white;
     }
     public static Color SetColor(int num)
@@ -207,26 +211,27 @@ public class CellController : MonoBehaviour
             CellGrid.transform.GetChild(i).transform.GetComponent<Cell>().used = false;
             CellGrid.transform.GetChild(i).GetComponent<Image>().color = Color.white;
         }
+        colorNum = 1;
     }
-    public void SetColorForUsedWords()
-    {
-        currentWordColorId = 0;
-        colorsId = new List<int>();
-        List<int> listIndex = new List<int>();
-        for (int i = 0; i < gameProcess.usedWords.Count; i++)
-        {
-            listIndex.Add(i);
-        }
+    //public void SetColorForUsedWords()
+    //{
+    //    currentWordColorId = 0;
+    //    colorsId = new List<int>();
+    //    List<int> listIndex = new List<int>();
+    //    for (int i = 0; i < gameProcess.usedWords.Count; i++)
+    //    {
+    //        listIndex.Add(i);
+    //    }
 
-        int index;
-        int count = listIndex.Count;
-        while (count > 0)
-        {          
-            index = Random.Range(0, listIndex.Count);
-            colorsId.Add(listIndex[index]+1);
-            listIndex.Remove(listIndex[index]);
-            count--;
-        }
+    //    int index;
+    //    int count = listIndex.Count;
+    //    while (count > 0)
+    //    {          
+    //        index = Random.Range(0, listIndex.Count);
+    //        colorsId.Add(listIndex[index]+1);
+    //        listIndex.Remove(listIndex[index]);
+    //        count--;
+    //    }
 
-    }
+    //}
 }

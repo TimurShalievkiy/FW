@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Cell : MonoBehaviour
 {
     public bool used = false;
-
+    public bool isTipCell = false;
     // Use this for initialization
     void Start()
     {
@@ -24,12 +24,12 @@ public class Cell : MonoBehaviour
             if (CellController.cells.Count == 0)
             {
                 CellController.cells.Add(this.gameObject);
-                this.gameObject.GetComponent<Image>().color = CellController.SetColor(CellController.currentWordColorId);
+                this.gameObject.GetComponent<Image>().color = CellController.SetColor();
             }
             else if (!CellController.cells.Exists(x => x == this.gameObject)
                       && IsNearest(this.gameObject.transform.GetSiblingIndex()))
             {
-                this.gameObject.GetComponent<Image>().color = CellController.SetColor(CellController.currentWordColorId);
+                this.gameObject.GetComponent<Image>().color = CellController.SetColor();
                 CellController.cells.Add(this.gameObject);
             }
             else if (CellController.cells.Exists(x => x == this.gameObject))
@@ -55,7 +55,8 @@ public class Cell : MonoBehaviour
                         CellController.cells.Remove(CellController.cells[i]);
                     }
                 }
-
+                
+                
             }
             string s = "";
             for (int i = 0; i < CellController.cells.Count; i++)

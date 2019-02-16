@@ -25,14 +25,15 @@ public class GameProcess : MonoBehaviour
  
         CellGrid.GetComponent<GameFieldCreator>().CreateGameField();
         creator.ResetFillWord();
-        FillTheCellsWithLetters();  
+        FillTheCellsWithLetters();
         //DictionaryController.SavePasedDictionary();
 
-
+     
         FillWordCreator.countOfResets = 0;
-
+        CollorManager.MixListColor();
         this.gameObject.transform.GetComponent<CellController>().ResetCellsValue();
-        this.gameObject.transform.GetComponent<CellController>().SetColorForUsedWords();
+        //this.gameObject.transform.GetComponent<CellController>().SetColorForUsedWords();
+      
 
     }
     public static void ShowCellNumbers()
