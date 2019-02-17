@@ -30,7 +30,7 @@ public class CollorManager : MonoBehaviour
         colors.Add(c);
         ColorUtility.TryParseHtmlString("#66CDAA", out c);
         colors.Add(c);
-        ColorUtility.TryParseHtmlString("# C34D0A", out c);
+        ColorUtility.TryParseHtmlString("#C34D0A", out c);
         colors.Add(c);
         ColorUtility.TryParseHtmlString("#587246", out c);
         colors.Add(c);

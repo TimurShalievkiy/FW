@@ -9,7 +9,8 @@ public class CellController : MonoBehaviour
     public GameObject CellGrid;
     public GameProcess gameProcess;
     public GameObject infoPanel;
-    public static List<int> colorsId;
+    public TipController tipController;
+ 
     public static int currentWordColorId; 
 
     static int colorNum = 0;
@@ -18,8 +19,7 @@ public class CellController : MonoBehaviour
     public static List<GameObject> cells;
     void Start()
     {
-        cells = new List<GameObject>();
-        
+        cells = new List<GameObject>();       
     }
 
     // Update is called once per frame
@@ -38,7 +38,11 @@ public class CellController : MonoBehaviour
 
         for (int i = 0; i < cells.Count; i++)
         {
+            if(cells[i].GetComponent<Cell>().isTipCell)
+                cells[i].GetComponent<Image>().color = CollorManager.tipColor;
+            else
             cells[i].GetComponent<Image>().color = Color.white;
+
             res += cells[i].transform.GetChild(0).GetComponent<Text>().text;
         }
 
@@ -91,19 +95,51 @@ public class CellController : MonoBehaviour
             for (int i = 0; i < cells.Count; i++)
             {
                 cells[i].transform.GetComponent<Cell>().used = true;
-                cells[i].GetComponent<Image>().color =  SetColor();
+                cells[i].GetComponent<Image>().color = SetColor();
+
+                if (tipController.CheckWordIsCurret(cellsList))
+                    tipController.ResetTip();
             }
             colorNum++;
+
             if (СheckForСompletion())
             {
+                tipController.ResetTip();
+
                 DictionaryController.SavePasedDictionary();
                 ResetCellsValue();
                 this.gameObject.transform.GetComponent<GameProcess>().SetGameGread();
             }
             currentWordColorId++;
         }
+        else if (tipController.wordIsDone && tipController.CheckWordIsCurret(cellsList))
+        {
+
+            for (int i = 0; i < tipController.word.Count; i++)
+            {
+                CellGrid.transform.GetChild(tipController.word[i]).transform.GetComponent<Cell>().used = true;
+                //cells[i].transform.GetComponent<Cell>().used = true;
+                CellGrid.transform.GetChild(tipController.word[i]).transform.GetComponent<Image>().color = SetColor();
+                //cells[i].GetComponent<Image>().color = SetColor();
+            }
+            if (tipController.CheckWordIsCurret(cellsList))
+                tipController.ResetTip();
+            colorNum++;
+
+            if (СheckForСompletion())
+            {
+                tipController.ResetTip();
+
+                DictionaryController.SavePasedDictionary();
+                ResetCellsValue();
+                this.gameObject.transform.GetComponent<GameProcess>().SetGameGread();
+            }
+            currentWordColorId++;
+
+
+        }
         //обработка правильного слова при неправильных ячейках
-        else if (gameProcess.usedWords.Find(x => x.ToLower() == t.text.ToLower()) !=null)
+        else if (gameProcess.usedWords.Find(x => x.ToLower() == t.text.ToLower()) != null)
         {
             Debug.Log("The same");
             infoPanel.gameObject.SetActive(true);
@@ -139,71 +175,13 @@ public class CellController : MonoBehaviour
    public static Color SetColor()
     {
 
-        //switch (colorNum)
-        //{
-        //    case 0:
-        //        Color c;
-        //        ColorUtility.TryParseHtmlString("#FFFFFF", out c);
-        //        return c;
-        //        //Color.white;
-        //    case 1:
-        //        return new Color(37, 109, 123);//return Color.blue;
-        //    case 2:
-        //         return new Color(146, 78, 125);// Color.green;
-        //    case 3:
-        //        return Color.cyan;
-        //    case 4:
-        //        return Color.grey;
-        //    case 5:
-        //        return Color.yellow;
-        //    case 6:
-        //        return Color.red;
-        //    case 7:
-        //        return Color.magenta;
-        //    case 8:
-        //        return new Color(0.3f, 0.8f, 0.2f);
-        //    case 9:
-        //        return new Color(0.5f, 0.9f, 0.5f);
-        //    case 10:
-        //        return new Color(0.2f, 0.4f, 0.8f);
-        //}
         Color c = CollorManager.colors[colorNum];
         if (c != null)
             return c;
 
                 return Color.white;
     }
-    public static Color SetColor(int num)
-    {
-        
-        switch (colorsId[num])
-        {
-            case 0:
-                return Color.white;
-            case 1:
-                return Color.blue;
-            case 2:
-                return Color.green;
-            case 3:
-                return Color.cyan;
-            case 4:
-                return Color.grey;
-            case 5:
-                return Color.yellow;
-            case 6:
-                return Color.red;
-            case 7:
-                return Color.magenta;
-            case 8:
-                return new Color(0.3f, 0.8f, 0.2f);
-            case 9:
-                return new Color(0.5f, 0.9f, 0.5f);
-            case 10:
-                return new Color(0.2f, 0.4f, 0.8f);
-        }
-        return Color.white;
-    }
-
+  
     public void ResetCellsValue()
     {
         for (int i = 0; i < CellGrid.transform.childCount; i++)
@@ -213,5 +191,31 @@ public class CellController : MonoBehaviour
         }
         colorNum = 0;
     }
+
+    public List<int> GetNextWordForTip()       
+    {
+        List<int> listWordIndex = new List<int>();
+        for (int i = 0; i < CellGrid.transform.childCount; i++)
+        {
+
+            if (!CellGrid.transform.GetChild(i).transform.GetComponent<Cell>().used)
+            {
+                
+                for (int j = 0; j < GameProcess.cellNumbers.Count; j++)
+                    if (GameProcess.cellNumbers[j].Exists(x => x == i))
+                    {
+                        //Debug.Log(j + " ");
+                        if (!listWordIndex.Exists(x => x == j))
+                        {
+                            listWordIndex.Add(j);
+                        }
+                    }
+            }
+        }
+            int index = listWordIndex[Random.Range(0, listWordIndex.Count)];
+            return GameProcess.cellNumbers[index];
+    }
+
+        
 
 }

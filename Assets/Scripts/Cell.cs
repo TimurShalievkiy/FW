@@ -7,6 +7,7 @@ public class Cell : MonoBehaviour
 {
     public bool used = false;
     public bool isTipCell = false;
+    
     // Use this for initialization
     void Start()
     {
