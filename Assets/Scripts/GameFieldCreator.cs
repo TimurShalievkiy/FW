@@ -17,11 +17,11 @@ public class GameFieldCreator : MonoBehaviour
     public void CreateGameField()
     {
 
-        if (difficulty > 6)
-        {
-            difficulty = 1;          
-        }
-       
+        //if (difficulty > 6)
+        //{
+        //    difficulty = 1;          
+        //}
+        DestroyChildren();
         switch (difficulty)
         {
             case 0:
@@ -29,26 +29,54 @@ public class GameFieldCreator : MonoBehaviour
                 break;
             case 1:
                 // Debug.Log("Create " + difficulty + " " + CellGreed.transform.childCount);
-                DestroyChildren();
-                
+                             
                 AddCellToField(2, 2);
                 break;
             case 2:
-                AddCellToField(3, 3);
+                AddCellToField(2, 2);               
                 break;
             case 3:
-                AddCellToField(4, 4);
+                AddCellToField(3, 3);                
                 break;
             case 4:
-                AddCellToField(5, 5);
+                AddCellToField(3, 3);
                 break;
             case 5:
-                AddCellToField(5, 6);
+                AddCellToField(3, 3);
                 break;
             case 6:
+                AddCellToField(4, 4);
+                break;
+            case 7:
+                AddCellToField(4, 4);
+                break;
+            case 8:
+                AddCellToField(4, 4);
+                break;
+            case 9:
+                AddCellToField(5, 5);
+                break;
+            case 10:
+                AddCellToField(5, 5);
+                break;
+            case 11:
+                AddCellToField(5, 5);
+                break;
+            case 12:
+                AddCellToField(5, 6);
+                break;
+            case 13:
+                AddCellToField(5, 6);
+                break;
+            case 14:
+                AddCellToField(5, 6);
+                break;
+            case 15:
                 AddCellToField(5, 7);
                 break;
             default:
+                Debug.Log("Defoult");
+                AddCellToField(5, 7);
                 break;
         }
     }

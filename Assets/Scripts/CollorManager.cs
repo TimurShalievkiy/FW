@@ -40,16 +40,12 @@ public class CollorManager : MonoBehaviour
         colors.Add(c);
 
 
-        //------------Перемешивание списка ---------------
-        //for (int i = 0; i < colors.Count; i++)
-        //{
-        //    Color tmp = colors[i];
-        //    colors.RemoveAt(i);
-        //    colors.Insert(Random.Range(1, colors.Count), tmp);
-        //}
+     //------------Перемешивание списка ---------------
         MixListColor();
     }
 
+
+    //------------Перемешивание списка ---------------
     public static void MixListColor()
     {
         for (int i = 0; i < colors.Count; i++)

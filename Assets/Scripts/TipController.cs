@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class TipController : MonoBehaviour
 {
+    public GameObject tipPanel;
     public CellController cellController;
     public Text tipTextView;
     public int countOfTips = 500;
@@ -61,7 +62,7 @@ public class TipController : MonoBehaviour
                    // Debug.Log(word[i] + " ");
                     if (i == word.Count - 1)
                     {
-                        Debug.Log(res);
+                        //Debug.Log(res);
                         wordIsDone = true; 
                         cellController.CheckAnsver(res);
                         word = null;
@@ -74,7 +75,7 @@ public class TipController : MonoBehaviour
         }
         else
         {
-
+            tipPanel.SetActive(true);
         }
        
     }
@@ -91,6 +92,8 @@ public class TipController : MonoBehaviour
         }
         return true;
     }
-    void LoadTipData()
-    { }
+    public void AddTip(int count)
+    {
+        countOfTips += count;
+    }
 }

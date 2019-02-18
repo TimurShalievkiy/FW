@@ -107,6 +107,7 @@ public class CellController : MonoBehaviour
                 tipController.ResetTip();
 
                 DictionaryController.SavePasedDictionary();
+                ThemsController.SetValuesOfProgresInThemes();
                 ResetCellsValue();
                 this.gameObject.transform.GetComponent<GameProcess>().SetGameGread();
             }
@@ -131,6 +132,7 @@ public class CellController : MonoBehaviour
                 tipController.ResetTip();
 
                 DictionaryController.SavePasedDictionary();
+                ThemsController.SetValuesOfProgresInThemes();
                 ResetCellsValue();
                 this.gameObject.transform.GetComponent<GameProcess>().SetGameGread();
             }
