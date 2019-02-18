@@ -103,7 +103,6 @@ public class FillWordCreator : MonoBehaviour
 
         if (ListPassedСells.Count == 0)
         {
-            //Debug.Log("Done 1");
             bildIsDone = true;
             return;
         }

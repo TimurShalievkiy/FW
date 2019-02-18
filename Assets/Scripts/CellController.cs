@@ -10,7 +10,9 @@ public class CellController : MonoBehaviour
     public GameProcess gameProcess;
     public GameObject infoPanel;
     public TipController tipController;
- 
+    public GameFieldCreator gameFieldCreator ;
+    public Text ProgressText;
+
     public static int currentWordColorId; 
 
     static int colorNum = 0;
@@ -19,7 +21,8 @@ public class CellController : MonoBehaviour
     public static List<GameObject> cells;
     void Start()
     {
-        cells = new List<GameObject>();       
+        cells = new List<GameObject>();
+        ProgressText.text = ThemsController.SetValuesOfProgresInThemes().ToString() + "%";
     }
 
     // Update is called once per frame
@@ -59,8 +62,9 @@ public class CellController : MonoBehaviour
     {
         t.text = str;
         bool flag = false;
+       
 
-        List<int> cellsList = new List<int>();
+    List<int> cellsList = new List<int>();
 
         for (int i = 0; i < cells.Count; i++)
         {
@@ -107,9 +111,17 @@ public class CellController : MonoBehaviour
                 tipController.ResetTip();
 
                 DictionaryController.SavePasedDictionary();
-                ThemsController.SetValuesOfProgresInThemes();
+
+                //Debug.Log("count =   " + DictionaryController.GetCountOfUnusedWord(DictionaryController.currentTopic));
+
+              
+
+                gameFieldCreator.IncrementDifficulty();
+                ProgressText.text = ThemsController.SetValuesOfProgresInThemes().ToString() + "%";
+
                 ResetCellsValue();
                 this.gameObject.transform.GetComponent<GameProcess>().SetGameGread();
+                
             }
             currentWordColorId++;
         }
@@ -119,9 +131,7 @@ public class CellController : MonoBehaviour
             for (int i = 0; i < tipController.word.Count; i++)
             {
                 CellGrid.transform.GetChild(tipController.word[i]).transform.GetComponent<Cell>().used = true;
-                //cells[i].transform.GetComponent<Cell>().used = true;
                 CellGrid.transform.GetChild(tipController.word[i]).transform.GetComponent<Image>().color = SetColor();
-                //cells[i].GetComponent<Image>().color = SetColor();
             }
             if (tipController.CheckWordIsCurret(cellsList))
                 tipController.ResetTip();
@@ -132,9 +142,15 @@ public class CellController : MonoBehaviour
                 tipController.ResetTip();
 
                 DictionaryController.SavePasedDictionary();
-                ThemsController.SetValuesOfProgresInThemes();
+               // Debug.Log("count =   "+ DictionaryController.GetCountOfUnusedWord(DictionaryController.currentTopic));
+               
+
+
+                gameFieldCreator.IncrementDifficulty();
+                ProgressText.text = ThemsController.SetValuesOfProgresInThemes().ToString() + "%";
                 ResetCellsValue();
                 this.gameObject.transform.GetComponent<GameProcess>().SetGameGread();
+                
             }
             currentWordColorId++;
 

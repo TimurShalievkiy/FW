@@ -7,12 +7,38 @@ public class GameFieldCreator : MonoBehaviour
 {
     public GameObject CellGreed;
     public GameObject Cell;
-    public int difficulty = 1;
+
+    public static int difficulty = 0;
 
 
     private void Start()
     {
        // CreateGameField();
+    }
+    int GetDifficultyByTheme(DictionaryController.Topic topic)
+    {
+        if (PlayerPrefs.HasKey(DictionaryController.currentTopic.ToString() + "difficulty"))
+        {
+            difficulty = int.Parse(PlayerPrefs.GetString(DictionaryController.currentTopic.ToString() + "difficulty"));
+        }
+        else
+        {
+            SaveDifficulty();
+        }
+
+ 
+        return difficulty;
+    }
+    void SaveDifficulty()
+    {
+        PlayerPrefs.SetString(DictionaryController.currentTopic.ToString() + "difficulty", difficulty.ToString());
+        PlayerPrefs.Save();
+    }
+    public void IncrementDifficulty()
+    {
+        //Debug.Log("increment difficulty = " + difficulty);
+        difficulty++;
+        SaveDifficulty();
     }
     public void CreateGameField()
     {
@@ -21,15 +47,15 @@ public class GameFieldCreator : MonoBehaviour
         //{
         //    difficulty = 1;          
         //}
+        difficulty = GetDifficultyByTheme(DictionaryController.currentTopic);
+
         DestroyChildren();
         switch (difficulty)
         {
             case 0:
-                
+                AddCellToField(2, 2);
                 break;
-            case 1:
-                // Debug.Log("Create " + difficulty + " " + CellGreed.transform.childCount);
-                             
+            case 1:       
                 AddCellToField(2, 2);
                 break;
             case 2:
@@ -75,7 +101,6 @@ public class GameFieldCreator : MonoBehaviour
                 AddCellToField(5, 7);
                 break;
             default:
-                Debug.Log("Defoult");
                 AddCellToField(5, 7);
                 break;
         }
@@ -107,7 +132,7 @@ public class GameFieldCreator : MonoBehaviour
                 GameObject newCell = GameObject.Instantiate(Cell);
                 newCell.transform.parent = CellGreed.transform;
             }
-            difficulty++;
+
             SetCellSize();
 
         }
@@ -124,8 +149,8 @@ public class GameFieldCreator : MonoBehaviour
 
     public void SetCellSize()
     {
-        // Debug.Log(CellGreed.transform.parent.transform.get);
         float x = (CellGreed.transform.GetComponent<LayoutElement>().preferredWidth / CellGreed.GetComponent<GridLayoutGroup>().constraintCount) - CellGreed.transform.GetComponent<GridLayoutGroup>().spacing.x;
         CellGreed.GetComponent<GridLayoutGroup>().cellSize = new Vector2(x, x);
     }
+    
 }

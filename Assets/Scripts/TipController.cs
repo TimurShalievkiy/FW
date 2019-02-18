@@ -42,14 +42,11 @@ public class TipController : MonoBehaviour
             if (word == null)
             {
                 word = cellController.GetNextWordForTip();
-                //Debug.Log("is null");
             }
             if (word.Count == 0)
             {
                 word = cellController.GetNextWordForTip();
-              //  Debug.Log("count == 0");
             }
-            //Debug.Log("count = "+ word.Count);
 
             for (int i = 0; i < word.Count; i++)
             {
@@ -59,10 +56,9 @@ public class TipController : MonoBehaviour
                     cellController.CellGrid.transform.GetChild(word[i]).transform.GetComponent<Cell>().isTipCell = true;
                     cellController.CellGrid.transform.GetChild(word[i]).transform.GetComponent<Image>().color = CollorManager.tipColor;
                     countOfTips--;
-                   // Debug.Log(word[i] + " ");
+
                     if (i == word.Count - 1)
                     {
-                        //Debug.Log(res);
                         wordIsDone = true; 
                         cellController.CheckAnsver(res);
                         word = null;
