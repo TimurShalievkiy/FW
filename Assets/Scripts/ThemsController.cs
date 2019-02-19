@@ -6,19 +6,22 @@ using UnityEngine.UI;
 
 public class ThemsController : MonoBehaviour
 {
-    
+    public Slider slider;
     private void Start()
     {
         SetValuesOfProgresInThemes2();
     }
-
+    private void Update()
+    {
+        
+    }
     public static float SetValuesOfProgresInThemes()
     {
        return CheckCountUnusedWordInTheme(DictionaryController.currentTopic);
     }
     public void SetValuesOfProgresInThemes2()
     {
-        CheckCountUnusedWordInTheme2(DictionaryController.Topic.Animals);
+        CheckCountUnusedWordInTheme2();
     }
 
     public void SetTheme(int index)
@@ -31,6 +34,13 @@ public class ThemsController : MonoBehaviour
                 break;
             case 1:
                 DictionaryController.currentTopic = DictionaryController.Topic.Animals;
+
+                Camera.main.GetComponent<ScenesController>().GoToScene(ScenesController.Scenes.mainGame);
+                //GameObject.Find("Main Camera").GetComponent<ScenesController>().GoToScene(ScenesController.Scenes.mainGame);
+
+                break;
+            case 2:
+                DictionaryController.currentTopic = DictionaryController.Topic.Vegetables;
 
                 Camera.main.GetComponent<ScenesController>().GoToScene(ScenesController.Scenes.mainGame);
                 //GameObject.Find("Main Camera").GetComponent<ScenesController>().GoToScene(ScenesController.Scenes.mainGame);
@@ -55,56 +65,58 @@ public class ThemsController : MonoBehaviour
                 else
                 {
                     float num = 0;
-                    //Debug.Log("GameFieldCreator.difficulty = " + GameFieldCreator.difficulty);
                     if (GameFieldCreator.difficulty == 0)
                     {
                         num = 0;
-                       // Debug.Log(0000000000000000000000000);
                     }
                     else
                     {
                         float percent = (allWordsCount - allWordsCount * 0.1f) / 100;
                         num = wordsWithMoreThenZeroCalls / percent;
                     }
-                   // Debug.Log(wordsWithMoreThenZeroCalls);
-                   // Debug.Log(System.Math.Round(num, 3) + "%");
      
-                    return (float)System.Math.Round(num, 3);
+                    return (float)System.Math.Round(num, 2);
                 }
                     break;
         }
         return 0;
     }
-     void CheckCountUnusedWordInTheme2(DictionaryController.Topic topic)
+     void CheckCountUnusedWordInTheme2()
     {
-        switch (topic)
-        {
-            case DictionaryController.Topic.Animals:
-                int allWordsCount = DictionaryController.GetCountWordsInTopic(DictionaryController.Topic.Animals);
-               
-                int wordsWithMoreThenZeroCalls = DictionaryController.GetCountOfUnusedWord2(DictionaryController.Topic.Animals);
+        
+        SetCount(DictionaryController.Topic.Animals);
+        SetCount(DictionaryController.Topic.Vegetables);
+        //switch (topic)
+        //{
+        //    case DictionaryController.Topic.Animals:
+        //        SetCount(topic)
+        //            break;
+        //}
+    }
+    void SetCount(DictionaryController.Topic topic)
+    {
+        int allWordsCount = DictionaryController.GetCountWordsInTopic(topic);
 
-                if ((allWordsCount - allWordsCount * 0.1) - wordsWithMoreThenZeroCalls <= 0)
-                {
-                    GameObject.Find("Animals").transform.Find("Count").GetComponent<Text>().text = "100%";
-                    Debug.Log("Done");
-                }
-                else
-                {
-                    //Debug.Log("all = " + (allWordsCount - allWordsCount * 0.1) + " - " + wordsWithMoreThenZeroCalls + " = " + ((int)(allWordsCount - allWordsCount * 0.1) - wordsWithMoreThenZeroCalls));
-                    float num = 0;
-                    if (wordsWithMoreThenZeroCalls == 0)
-                        num = 0;
-                    else
-                    {
-                        float percent = (allWordsCount - allWordsCount * 0.1f) / 100;
-                        num = wordsWithMoreThenZeroCalls / percent;
-                    }
-                    //Debug.Log(System.Math.Round(num, 2) + "%");
-                    GameObject.Find("Animals").transform.Find("Count").GetComponent<Text>().text = System.Math.Round(num,2) + "%";
-                   // Debug.Log("all = " + allWordsCount + " - " + wordsWithMoreThenZeroCalls + " = " + ((int)(allWordsCount - allWordsCount * 0.1) - wordsWithMoreThenZeroCalls));
-                }
-                    break;
+        int wordsWithMoreThenZeroCalls = DictionaryController.GetCountOfUnusedWord2(topic);
+        Debug.Log(topic + " all count = " + allWordsCount + " used = " + wordsWithMoreThenZeroCalls);
+        if ((allWordsCount - allWordsCount * 0.1) - wordsWithMoreThenZeroCalls <= 0)
+        {
+            GameObject.Find(topic.ToString()).transform.Find("Count").GetComponent<Text>().text = "100%";
+            slider.value = 100;
+        }
+        else
+        {
+            float num = 0;
+            if (wordsWithMoreThenZeroCalls == 0)
+                num = 0;
+            else
+            {
+                float percent = (allWordsCount - allWordsCount * 0.1f) / 100;
+                num = wordsWithMoreThenZeroCalls / percent;
+            }
+
+            GameObject.Find(topic.ToString()).transform.Find("Count").GetComponent<Text>().text = System.Math.Round(num, 2) + "%";
+            slider.value = (float)System.Math.Round(num, 2);
         }
     }
 }

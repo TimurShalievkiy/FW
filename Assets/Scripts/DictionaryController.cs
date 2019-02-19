@@ -9,7 +9,7 @@ public class DictionaryController : MonoBehaviour
 
     // public GameObject Animals;
 
-    public  enum Topic { Random = 0, Animals = 1 }
+    public  enum Topic { Random = 0, Animals = 1, Vegetables=2 }
 
     public struct PassedWord
     {
@@ -58,6 +58,11 @@ public class DictionaryController : MonoBehaviour
             case Topic.Animals:
                 Animals a = new Animals();
                 return a.words;
+            case Topic.Vegetables:
+                Vegetables v = new Vegetables();
+                return v.words;
+
+                
         }
         return null;
     }
@@ -70,6 +75,9 @@ public class DictionaryController : MonoBehaviour
             case Topic.Animals:
                 Animals a = new Animals();
                 return a.words;
+            case Topic.Vegetables:
+                Vegetables v = new Vegetables();
+                return v.words;
         }
         return null;
     }
@@ -115,7 +123,7 @@ public class DictionaryController : MonoBehaviour
        //Debug.Log("Save");
         string str = "";
 
-        if (pasedWords!=null || pasedWords.Count > 0)
+        if ((pasedWords!=null || pasedWords.Count > 0))
         {
             int min = pasedWords.Min(x => x.callNumber);
             int count = pasedWords.Count(x => x.callNumber == min);
@@ -275,9 +283,7 @@ public class DictionaryController : MonoBehaviour
     {
         
         words = FillTheWordsOnTheCurrentTopic(topic);
-       
-        //LoadPasedDictionary(topic);
-        //Debug.Log("load " + pasedWords.Count(x => x.callNumber > 0));
+
         return pasedWords.Count(x => x.callNumber > 0);
     }
     public static int GetCountOfUnusedWord2(Topic topic)
@@ -298,6 +304,9 @@ public class DictionaryController : MonoBehaviour
             case Topic.Animals:
                 Animals a = new Animals();
                 return a.words.Count;
+            case Topic.Vegetables:
+                Vegetables v = new Vegetables();
+                return v.words.Count;
         }
         return 0;
     }

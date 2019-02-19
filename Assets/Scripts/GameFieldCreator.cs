@@ -102,6 +102,8 @@ public class GameFieldCreator : MonoBehaviour
                 break;
             default:
                 AddCellToField(5, 7);
+                Debug.Log("difficulty = " + difficulty);
+                difficulty--;
                 break;
         }
     }

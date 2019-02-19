@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 
-public class Animals 
+public class Animals
 {
     public List<Word> words;
 
