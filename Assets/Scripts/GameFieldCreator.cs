@@ -100,8 +100,11 @@ public class GameFieldCreator : MonoBehaviour
             case 15:
                 AddCellToField(5, 7);
                 break;
+            case 16:
+                AddCellToField(5, 8);
+                break;
             default:
-                AddCellToField(5, 7);
+                AddCellToField(5, 8);
                 Debug.Log("difficulty = " + difficulty);
                 difficulty--;
                 break;
@@ -109,16 +112,17 @@ public class GameFieldCreator : MonoBehaviour
     }
     void AddCellToField(int x, int y)
     {
-       
 
-        if (x > 5)
-            x = 5;
-        if (x < 2)
-            x = 2;
-        if (y > 7)
-            y = 7;
-        if (y < 2)
-            y = 2;
+        Mathf.Clamp(x, 2, 5);
+        Mathf.Clamp(y, 2, 8);
+        //if (x > 5)
+        //    x = 5;
+        //if (x < 2)
+        //    x = 2;
+        //if (y > 8)
+        //    y = 8;
+        //if (y < 2)
+        //    y = 2;
 
         if (x * y > CellGreed.transform.childCount)
         {
@@ -151,8 +155,9 @@ public class GameFieldCreator : MonoBehaviour
 
     public void SetCellSize()
     {
-        float x = (CellGreed.transform.GetComponent<LayoutElement>().preferredWidth / CellGreed.GetComponent<GridLayoutGroup>().constraintCount) - CellGreed.transform.GetComponent<GridLayoutGroup>().spacing.x;
-        CellGreed.GetComponent<GridLayoutGroup>().cellSize = new Vector2(x, x);
+        //float x = (CellGreed.transform.GetComponent<LayoutElement>().preferredHeight / CellGreed.GetComponent<GridLayoutGroup>().constraintCount)
+          //  - CellGreed.transform.GetComponent<GridLayoutGroup>().spacing.x;
+       // CellGreed.GetComponent<GridLayoutGroup>().cellSize = new Vector2(x, x);
     }
     
 }

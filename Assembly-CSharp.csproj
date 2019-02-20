@@ -64,6 +64,7 @@
     <Compile Include="Assets\Scripts\Cell.cs" />
     <Compile Include="Assets\Scripts\CellController.cs" />
     <Compile Include="Assets\Scripts\CollorManager.cs" />
+    <Compile Include="Assets\Scripts\DataManager.cs" />
     <Compile Include="Assets\Scripts\DB\Animals.cs" />
     <Compile Include="Assets\Scripts\DB\Vegetables.cs" />
     <Compile Include="Assets\Scripts\DictionaryController.cs" />
