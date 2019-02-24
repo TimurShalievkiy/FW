@@ -125,10 +125,11 @@ public class DictionaryController : MonoBehaviour
 
         if ((pasedWords!=null || pasedWords.Count > 0))
         {
+            DataManager.SaveTheme();
             int min = pasedWords.Min(x => x.callNumber);
             int count = pasedWords.Count(x => x.callNumber == min);
             float pers = (float)count / pasedWords.Count;
-            //Debug.Log(min + " = " + count);
+
             if (pers < 0.1)
             {
                 //Debug.Log("MIIIIIIN");
@@ -138,7 +139,7 @@ public class DictionaryController : MonoBehaviour
                         pasedWords[i] = new PassedWord(pasedWords[i].id, pasedWords[i].callNumber + 1, pasedWords[i].lettersNumber);
                 }
             }
-            //Debug.Log("else");
+  
             foreach (var item in pasedWords)
             {
                 str += item.id + " " + item.callNumber + " " + item.lettersNumber + " ";

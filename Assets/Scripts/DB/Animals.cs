@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 
 public class Animals
 {
+    
     public List<Word> words;
 
     public Animals()

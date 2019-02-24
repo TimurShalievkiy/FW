@@ -98,7 +98,7 @@ public class ThemsController : MonoBehaviour
         int allWordsCount = DictionaryController.GetCountWordsInTopic(topic);
 
         int wordsWithMoreThenZeroCalls = DictionaryController.GetCountOfUnusedWord2(topic);
-        Debug.Log(topic + " all count = " + allWordsCount + " used = " + wordsWithMoreThenZeroCalls);
+       // Debug.Log(topic + " all count = " + allWordsCount + " used = " + wordsWithMoreThenZeroCalls);
         if ((allWordsCount - allWordsCount * 0.1) - wordsWithMoreThenZeroCalls <= 0)
         {
             GameObject.Find(topic.ToString()).transform.Find("Count").GetComponent<Text>().text = "100%";
